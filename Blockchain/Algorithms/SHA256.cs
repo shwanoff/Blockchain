@@ -30,7 +30,7 @@ namespace Blockchain.Algorithms
         /// <returns>Хеш.</returns>
         public string GetHash(string data)
         {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(data), "Не возможно выполнить хеширование. Аргумент не содержит данных");
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(data), $"Не возможно выполнить хеширование. Аргумент {nameof(data)} не содержит данных.");
             Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
 
             var bytes = Encoding.Default.GetBytes(data);
@@ -47,7 +47,7 @@ namespace Blockchain.Algorithms
         /// <returns>Хеш компонента.</returns>
         public string GetHash(IHashable data)
         {
-            Contract.Requires<ArgumentNullException>(data != null, "Не возможно выполнить хеширование. Аргумент равен null.");
+            Contract.Requires<ArgumentNullException>(data != null,  $"Не возможно выполнить хеширование. Аргумент {nameof(data)} равен null.");
             Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
 
             var dataBeforeHash = data.GetStringForHash();
