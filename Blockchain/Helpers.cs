@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blockchain.Algorithms;
+using System;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -32,9 +33,16 @@ namespace Blockchain
             return enumElement.ToString();
         }
 
-        public static bool IsCorrect(this Block block)
+        /// <summary>
+        /// Проверка корректности хешируемого объекта.
+        /// </summary>
+        /// <param name="component">Хешируемый компонент.</param>
+        /// <param name="algorithm">Алгоритм хеширования.</param>
+        /// <returns>Корректность компонента. true - компонент корректный, false - компонент не корректен.</returns>
+        public static bool IsCorrect(this IHashable component, IAlgorithm algorithm)
         {
-            throw new NotImplementedException();
+            var correct = component.Hash == component.GetHash(algorithm);
+            return correct;
         }
     }
 }

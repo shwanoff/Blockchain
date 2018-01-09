@@ -48,7 +48,7 @@ namespace Blockchain
         public Block(Block previousBlock, Data data, IAlgorithm algorithm)
         {
             Contract.Requires<ArgumentNullException>(previousBlock != null, $"Не возможно создать блок. Отсутствует ссылка на предыдущий блок.");
-            Contract.Requires<ArgumentException>(previousBlock.IsCorrect(), $"Не возможно создать блок. Предыдущий блок не корректный.");
+            Contract.Requires<ArgumentException>(previousBlock.IsCorrect(algorithm), $"Не возможно создать блок. Предыдущий блок не корректный.");
             Contract.Requires<ArgumentNullException>(data != null, $"Не возможно создать блок. Отсутствуют данные для сохранения в блоке.");
 
             Version = Properties.Settings.Default.Version;
@@ -69,11 +69,6 @@ namespace Blockchain
             data += PreviousHash;
             data += Data.Hash;
             return data;
-        }
-
-        public bool IsCorrect()
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
