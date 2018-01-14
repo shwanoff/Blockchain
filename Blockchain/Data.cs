@@ -13,22 +13,25 @@ namespace Blockchain
         public string Content { get; private set; }
 
         /// <summary>
-        /// Хеш блока.
+        /// Хеш данных.
         /// </summary>
         public string Hash { get; private set; }
 
         /// <summary>
         /// Создать экземпляр данных.
         /// </summary>
-        /// <param name="content">Данные.</param>
-        /// <param name="algorithm">Алгоритм для хеширования.</param>
+        /// <param name="content"> Данные. </param>
+        /// <param name="algorithm"> Алгоритм для хеширования. </param>
         public Data(string content, IAlgorithm algorithm)
         {
             Content = content;
             Hash = this.GetHash(algorithm);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Получить данные из объекта, на основе которых будет строиться хеш.
+        /// </summary>
+        /// <returns> Хешируемые данные. </returns>
         public string GetStringForHash()
         {
             return Content;
@@ -37,7 +40,7 @@ namespace Blockchain
         /// <summary>
         /// Приведение объекта к строке.
         /// </summary>
-        /// <returns>Хранящиеся данные.</returns>
+        /// <returns> Хранящиеся данные. </returns>
         public override string ToString()
         {
             return Content;

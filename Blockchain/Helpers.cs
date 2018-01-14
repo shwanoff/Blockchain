@@ -16,8 +16,8 @@ namespace Blockchain
         /// <remarks>
         /// Для корректной работы необходимо использовать атрибут [Description("Name")] для каждого элемента перечисления.
         /// </remarks>
-        /// <param name="enumElement">Элемент перечисления</param>
-        /// <returns>Название элемента</returns>
+        /// <param name="enumElement"> Элемент перечисления. </param>
+        /// <returns> Название элемента. </returns>
         public static string GetDescription(this Enum enumElement)
         {
             Type type = enumElement.GetType();
@@ -36,13 +36,28 @@ namespace Blockchain
         /// <summary>
         /// Проверка корректности хешируемого объекта.
         /// </summary>
-        /// <param name="component">Хешируемый компонент.</param>
-        /// <param name="algorithm">Алгоритм хеширования.</param>
-        /// <returns>Корректность компонента. true - компонент корректный, false - компонент не корректен.</returns>
+        /// <param name="component"> Хешируемый компонент. </param>
+        /// <param name="algorithm"> Алгоритм хеширования. </param>
+        /// <returns> Корректность компонента. true - компонент корректный, false - компонент не корректен. </returns>
         public static bool IsCorrect(this IHashable component, IAlgorithm algorithm)
         {
             var correct = component.Hash == component.GetHash(algorithm);
             return correct;
+        }
+
+        /// <summary>
+        /// Проверить псевдоуникальный 128-битный идентификатор на корректность.
+        /// </summary>
+        /// <param name="guid"> Проверяемый идентификатор. </param>
+        /// <returns> Корректность идентификатора. true - идентификатор корректен, false - идентификатор не корректен. </returns>
+        public static bool IsCorrect(this Guid guid)
+        {
+            if(guid == null || guid == Guid.Empty)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -44,6 +44,7 @@
     <Compile Include="Algorithms\Algorithms.cs" />
     <Compile Include="Algorithms\Sha256.cs" />
     <Compile Include="Block.cs" />
+    <Compile Include="Chain.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Algorithms\IAlgorithm.cs" />
     <Compile Include="Algorithms\IHashable.cs" />
@@ -54,6 +55,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
