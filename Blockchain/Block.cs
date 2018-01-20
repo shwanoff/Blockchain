@@ -1,6 +1,7 @@
 ﻿using Blockchain.Algorithms;
 using System;
 using System.Diagnostics.Contracts;
+using Blockchain.Exceptions;
 
 namespace Blockchain
 {
@@ -9,6 +10,11 @@ namespace Blockchain
     /// </summary>
     public class Block : IHashable
     {
+        /// <summary>
+        /// Алгоритм хеширования.
+        /// </summary>
+        private IAlgorithm _algorithm = AlgorithmHelper.GetDefaultAlgorithm();
+
         /// <summary>
         /// Версия спецификации блока.
         /// </summary>
@@ -50,13 +56,43 @@ namespace Blockchain
         /// <param name="previousBlock">Предыдущий блок.</param>
         /// <param name="data">Данные, сохраняемые в блоке.</param>
         /// <param name="algorithm">Алгоритм хеширования.</param>
-        /// <param name="user">Идентификатор пользователя, создавшего блок.</param>
-        public Block(Block previousBlock, Data data, User user, IAlgorithm algorithm)
+        /// <param name="user"> Идентификатор пользователя, создавшего блок. </param>
+        public Block(Block previousBlock, Data data, User user, IAlgorithm algorithm = null)
         {
-            Contract.Requires<ArgumentNullException>(previousBlock != null, $"Не возможно создать блок. Отсутствует ссылка на предыдущий блок.");
-            Contract.Requires<ArgumentException>(previousBlock.IsCorrect(algorithm), $"Не возможно создать блок. Предыдущий блок не корректный.");
-            Contract.Requires<ArgumentNullException>(data != null, $"Не возможно создать блок. Отсутствуют данные для сохранения в блоке.");
-            Contract.Requires<ArgumentNullException>(user != null, $"Не возможно создать блок. Отсутствует идентификатор пользователя.");
+            if(previousBlock == null)
+            {
+                throw new MethodRequiresException(nameof(previousBlock));
+            }
+
+            if(!previousBlock.IsCorrect())
+            {
+                throw new MethodRequiresException(nameof(previousBlock));
+            }
+
+            if(data == null)
+            {
+                throw new MethodRequiresException(nameof(data));
+            }
+
+            if(!data.IsCorrect())
+            {
+                throw new MethodRequiresException(nameof(data));
+            }
+
+            if(user == null)
+            {
+                throw new MethodRequiresException(nameof(user));
+            }
+
+            if(!user.IsCorrect())
+            {
+                throw new MethodRequiresException(nameof(user));
+            }
+
+            if(algorithm != null)
+            {
+                _algorithm = algorithm;
+            }
 
             Version = Properties.Settings.Default.Version;
             Code = Guid.NewGuid();
@@ -64,7 +100,12 @@ namespace Blockchain
             PreviousHash = previousBlock.Hash;
             Data = data;
             User = user;
-            Hash = this.GetHash(algorithm);
+            Hash = this.GetHash(_algorithm);
+
+            if (!this.IsCorrect())
+            {
+                throw new MethodResultException(nameof(Block));
+            }
         }
 
         /// <summary>
@@ -72,26 +113,40 @@ namespace Blockchain
         /// </summary>
         /// <param name="user"> Пользователь системы. </param>
         /// <param name="algorithm"> Алгоритм хеширования. </param>
-        protected Block(User user, IAlgorithm algorithm)
+        protected Block(IAlgorithm algorithm = null)
         {
-            Version = Properties.Settings.Default.Version;
-            Code = Guid.NewGuid();
-            CreatedOn = (ulong)DateTime.Now.Ticks;
-            PreviousHash = algorithm.GetHash(Guid.NewGuid().ToString());
-            Data = new Data("Genesis block", algorithm);
-            User = user;
-            Hash = this.GetHash(algorithm);
+            if (algorithm != null)
+            {
+                _algorithm = algorithm;
+            }
+
+            Version = 1;
+            Code = Guid.Parse("8002EFBA-72FA-4156-B7F2-BBB818160E64");
+            CreatedOn = (ulong)DateTime.Parse("2018-01-01").Ticks;
+            User = new User("admin", "admin", UserRole.Admin);
+            PreviousHash = _algorithm.GetHash("79098738-8772-4F0A-998D-9EC7737720F4");
+            Data = User.GetData();
+            Hash = this.GetHash(_algorithm);
+
+            if (!this.IsCorrect())
+            {
+                throw new MethodResultException(nameof(Block));
+            }
         }
 
         /// <summary>
         /// Получить начальный блок цепочки блоков.
         /// </summary>
-        /// <param name="user"> Пользователь системы. </param>
         /// <param name="algorithm"> Алгоритм хеширования. </param>
         /// <returns> Стартовый блок. </returns>
-        public static Block GetGenesisBlock(User user, IAlgorithm algorithm)
+        public static Block GetGenesisBlock(IAlgorithm algorithm = null)
         {
-            var genesisBlock = new Block(user, algorithm);
+            if (algorithm == null)
+            {
+                algorithm = AlgorithmHelper.GetDefaultAlgorithm();
+            }
+
+            var genesisBlock = new Block(algorithm);
             return genesisBlock;
         }
 

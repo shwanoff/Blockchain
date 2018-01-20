@@ -1,4 +1,5 @@
 ﻿using Blockchain.Algorithms;
+using Blockchain.Exceptions;
 
 namespace Blockchain
 {
@@ -7,6 +8,11 @@ namespace Blockchain
     /// </summary>
     public class Data : IHashable
     {
+        /// <summary>
+        /// Алгоритм хеширования.
+        /// </summary>
+        private IAlgorithm _algorithm = AlgorithmHelper.GetDefaultAlgorithm();
+
         /// <summary>
         /// Содержимое блока.
         /// </summary>
@@ -18,14 +24,38 @@ namespace Blockchain
         public string Hash { get; private set; }
 
         /// <summary>
+        /// Тип хранимых данных.
+        /// </summary>
+        public DataType Type { get; private set; }
+
+        /// <summary>
         /// Создать экземпляр данных.
         /// </summary>
         /// <param name="content"> Данные. </param>
         /// <param name="algorithm"> Алгоритм для хеширования. </param>
-        public Data(string content, IAlgorithm algorithm)
+        public Data(string content, DataType type, IAlgorithm algorithm = null)
         {
+            // Проверяем предусловия.
+            if(string.IsNullOrEmpty(content))
+            {
+                throw new MethodRequiresException(nameof(content));
+            }
+
+            // Если не указан алгоритм, то берем по умолчанию.
+            if (algorithm != null)
+            {
+                _algorithm = algorithm;
+            }
+
             Content = content;
-            Hash = this.GetHash(algorithm);
+            Type = type;
+
+            Hash = this.GetHash(_algorithm);
+
+            if (!this.IsCorrect())
+            {
+                throw new MethodResultException(nameof(Data));
+            }
         }
 
         /// <summary>
@@ -34,7 +64,9 @@ namespace Blockchain
         /// <returns> Хешируемые данные. </returns>
         public string GetStringForHash()
         {
-            return Content;
+            var text = Content;
+            text += Type;
+            return text;
         }
 
         /// <summary>

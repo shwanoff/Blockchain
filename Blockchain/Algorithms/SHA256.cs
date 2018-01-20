@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -30,14 +29,14 @@ namespace Blockchain.Algorithms
         /// <returns>Хеш.</returns>
         public string GetHash(string data)
         {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(data), $"Не возможно выполнить хеширование. Аргумент {nameof(data)} не содержит данных.");
-            Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
-
             var bytes = Encoding.Default.GetBytes(data);
             var hashByte = _sha256.ComputeHash(bytes);
             var hash = BitConverter.ToString(hashByte);
 
-            return hash;
+            var formattedHash = hash.Replace("-", "")
+                                    .ToLower();
+
+            return formattedHash;
         }
 
         /// <summary>
@@ -47,12 +46,18 @@ namespace Blockchain.Algorithms
         /// <returns>Хеш компонента.</returns>
         public string GetHash(IHashable data)
         {
-            Contract.Requires<ArgumentNullException>(data != null,  $"Не возможно выполнить хеширование. Аргумент {nameof(data)} равен null.");
-            Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
-
             var dataBeforeHash = data.GetStringForHash();
             var hash = GetHash(dataBeforeHash);
             return hash;
+        }
+
+        /// <summary>
+        /// Приведение объекта к строке.
+        /// </summary>
+        /// <returns> Название алгоритма хеширования. </returns>
+        public override string ToString()
+        {
+            return "SHA 256";
         }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using Blockchain.Algorithms;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
+using Blockchain.Exceptions;
 
 
 namespace Blockchain
@@ -14,14 +13,14 @@ namespace Blockchain
     public class Chain
     {
         /// <summary>
+        /// Алгоритм хеширования.
+        /// </summary>
+        private IAlgorithm _algorithm = AlgorithmHelper.GetDefaultAlgorithm();
+
+        /// <summary>
         /// Список, содержащий в себе все блоки.
         /// </summary>
         private List<Block> _blockChain = null;
-
-        /// <summary>
-        /// Алгоритм хеширования используемый в этой цепочки блоков.
-        /// </summary>
-        public IAlgorithm Algorithm { get; private set; }
 
         /// <summary>
         /// Цепочка блоков.
@@ -32,6 +31,16 @@ namespace Blockchain
         /// Крайний блок в цепочке блоков.
         /// </summary>
         public Block PreviousBlock => _blockChain.Last();
+
+        /// <summary>
+        /// Блоки, содержащие информационные данные.
+        /// </summary>
+        public IEnumerable<Block> ContentBlocks => _blockChain.Where(block => block.Data.Type == DataType.Content);
+
+        /// <summary>
+        /// Блоки, содержащие информацию о пользователях.
+        /// </summary>
+        public IEnumerable<Block> UserBlocks => _blockChain.Where(block => block.Data.Type == DataType.User);
 
         /// <summary>
         /// Создать новый экземпляр цепочки блоков.
@@ -56,6 +65,11 @@ namespace Blockchain
                     throw new TypeLoadException("Полученная глобальная цепочка блоков является некорректной!");
                 }
             }
+
+            if(!CheckCorrect())
+            {
+                throw new MethodResultException(nameof(Chain));
+            }
         }
 
         /// <summary>
@@ -64,9 +78,8 @@ namespace Blockchain
         private void CreateNewBlockChain()
         {
             _blockChain = new List<Block>();
-            var currentUser = User.GetCurrentUser();
-            var genesisBlock = Block.GetGenesisBlock(currentUser, Algorithm);
-            _blockChain.Add(genesisBlock);
+            var genesisBlock = Block.GetGenesisBlock(_algorithm);
+            AddBlock(genesisBlock);
         }
 
         /// <summary>
@@ -77,7 +90,7 @@ namespace Blockchain
         {
             foreach(var block in _blockChain)
             {
-                if(!block.IsCorrect(Algorithm))
+                if(!block.IsCorrect(_algorithm))
                 {
                     return false;
                 }
@@ -92,26 +105,72 @@ namespace Blockchain
         /// <returns> Цепочка блоков. </returns>
         private Chain GetGlobalChein()
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         /// <summary>
         /// Добавить данные в цепочку блоков.
         /// </summary>
-        /// <param name="data"> Добавляемые данные. </param>
-        public void Add(Data data)
+        /// <param name="text"> Добавляемые данные. </param>
+        public void AddContent(string text)
         {
-            Contract.Requires<ArgumentNullException>(data != null, $"Не возможно добавить данные в цепочку блоков. Отсутствуют данные для сохранения в блоке.");
-            Contract.Requires<ArgumentNullException>(data.IsCorrect(Algorithm), $"Не возможно добавить данные в цепочку блоков. Данные являются некорректными.");
-
-            var block = new Block(PreviousBlock, data, User.GetCurrentUser(), Algorithm);
-            if(block.IsCorrect(Algorithm))
+            if(string.IsNullOrEmpty(text))
             {
-                _blockChain.Add(block);
+                throw new MethodRequiresException(nameof(text));
             }
-            else
+
+            var data = new Data(text, DataType.Content);
+
+            var block = new Block(PreviousBlock, data, User.GetCurrentUser(), _algorithm);
+
+            AddBlock(block);
+        }
+
+        /// <summary>
+        /// Добавить данные о пользователе в цепочку.
+        /// </summary>
+        /// <param name="login"> Имя пользователя. </param>
+        /// <param name="password"> Пароль пользователя. </param>
+        /// <param name="role"> Права доступа пользователя. </param>
+        public void AddUser(string login, string password, UserRole role = UserRole.Reader)
+        {
+            if (string.IsNullOrEmpty(login))
             {
-                throw new ArgumentException("Не удалось добавить данные в цепочку блоков. Созданные блок некорректен.", nameof(block));
+                throw new MethodRequiresException(nameof(login));
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new MethodRequiresException(nameof(password));
+            }
+
+            if(UserBlocks.Any(b => b.Data.Content.Contains(login)))
+            {
+                throw new MethodRequiresException(nameof(login));
+            }
+
+            var user = new User(login, password, role);
+            var data = user.GetData();
+            var block = new Block(PreviousBlock, data, User.GetCurrentUser());
+            AddBlock(block);
+        }
+
+        /// <summary>
+        /// Добавить блок.
+        /// </summary>
+        /// <param name="block"> Добавляемый блок. </param>
+        private void AddBlock(Block block)
+        {
+            if(!block.IsCorrect())
+            {
+                throw new MethodRequiresException(nameof(block));
+            }
+
+            _blockChain.Add(block);
+
+            if(!CheckCorrect())
+            {
+                throw new MethodResultException(nameof(Chain));
             }
         }
     }
