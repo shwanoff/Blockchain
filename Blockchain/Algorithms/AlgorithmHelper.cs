@@ -18,7 +18,7 @@ namespace Blockchain.Algorithms
             // Проверяем предусловия.
             if(component == null)
             {
-                throw new MethodRequiresException(nameof(component));
+                throw new MethodRequiresException(nameof(component), "Компонент не может быть равен null.");
             }
 
             // Если не был передан алгоритм хеширования, то получаем алгоритм по умолчанию.
@@ -32,7 +32,7 @@ namespace Blockchain.Algorithms
             // Проверяем постусловия.
             if(string.IsNullOrEmpty(hash))
             {
-                throw new MethodResultException(nameof(hash));
+                throw new MethodResultException(nameof(hash), "Ошибка создания хеша. Хеш пустой.");
             }
 
             return hash;
@@ -49,7 +49,7 @@ namespace Blockchain.Algorithms
             // Проверяем предусловия.
             if(string.IsNullOrEmpty(text))
             {
-                throw new MethodRequiresException(nameof(text));
+                throw new MethodRequiresException(nameof(text), "Текст не может быть пустым или равен null.");
             }
 
             // Если не был передан алгоритм хеширования, то получаем алгоритм по умолчанию.
@@ -63,7 +63,7 @@ namespace Blockchain.Algorithms
             // Проверяем постусловия.
             if(string.IsNullOrEmpty(hash))
             {
-                throw new MethodResultException(nameof(hash));
+                throw new MethodResultException(nameof(hash), "Ошибка создания хеша. Хеш пустой.");
             }
 
             return hash;

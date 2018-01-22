@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Blockchain.Exceptions;
-
+using BlockchainData;
 
 namespace Blockchain
 {
@@ -16,6 +16,8 @@ namespace Blockchain
         /// Алгоритм хеширования.
         /// </summary>
         private IAlgorithm _algorithm = AlgorithmHelper.GetDefaultAlgorithm();
+
+        private IDataProvider _dataProvider = DataProviderHelper.GetDefaultDataProvider();
 
         /// <summary>
         /// Список, содержащий в себе все блоки.
@@ -68,7 +70,7 @@ namespace Blockchain
 
             if(!CheckCorrect())
             {
-                throw new MethodResultException(nameof(Chain));
+                throw new MethodResultException(nameof(Chain), "Ошибка создания цепочки блоков. Цепочка некорректна.");
             }
         }
 
@@ -105,6 +107,7 @@ namespace Blockchain
         /// <returns> Цепочка блоков. </returns>
         private Chain GetGlobalChein()
         {
+            // TODO: реализовать получение данных.
             return null;
         }
 
@@ -116,7 +119,7 @@ namespace Blockchain
         {
             if(string.IsNullOrEmpty(text))
             {
-                throw new MethodRequiresException(nameof(text));
+                throw new MethodRequiresException(nameof(text), "Текст не должен быть пустым или равен null.");
             }
 
             var data = new Data(text, DataType.Content);
@@ -136,17 +139,18 @@ namespace Blockchain
         {
             if (string.IsNullOrEmpty(login))
             {
-                throw new MethodRequiresException(nameof(login));
+                throw new MethodRequiresException(nameof(login), "Логин не может быть пустым или равным null.");
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                throw new MethodRequiresException(nameof(password));
+                throw new MethodRequiresException(nameof(password), "Пароль не может быть пустым или равным null.");
             }
 
+            // TODO: Исправить. В данном случае сработает если был добавлен shwan1 и будут пытаться добавить shwan.
             if(UserBlocks.Any(b => b.Data.Content.Contains(login)))
             {
-                throw new MethodRequiresException(nameof(login));
+                throw new MethodRequiresException(nameof(login), "Пользователь с таким логином уже добавлен в систему.");
             }
 
             var user = new User(login, password, role);
@@ -163,14 +167,16 @@ namespace Blockchain
         {
             if(!block.IsCorrect())
             {
-                throw new MethodRequiresException(nameof(block));
+                throw new MethodRequiresException(nameof(block), "Блок не корректный.");
             }
 
+            // TODO: Реализовать транзакцию.
             _blockChain.Add(block);
+            _dataProvider.AddBlock(block.Version, block.Code.ToString(), block.CreatedOn, block.Hash, block.PreviousHash, block.Data.GetJson(), block.User.GetJson());
 
             if(!CheckCorrect())
             {
-                throw new MethodResultException(nameof(Chain));
+                throw new MethodResultException(nameof(Chain), "Была нарушена корректность после добавления блока.");
             }
         }
     }

@@ -13,8 +13,8 @@ namespace Blockchain.Exceptions
         /// с указанным сообщением об ошибке и именем параметра, ставшего причиной исключения. 
         /// </summary>
         /// <param name="paramName"> Имя параметра. </param>
-        public MethodRequiresException(string paramName) 
-            : base($"Аргумент {paramName} не соответствует предусловиям.", paramName)
+        public MethodRequiresException(string paramName, string message) 
+            : base($"Аргумент {paramName} не соответствует предусловиям. {message}", paramName)
         {
         }
     }

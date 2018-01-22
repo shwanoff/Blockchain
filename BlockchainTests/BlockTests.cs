@@ -17,7 +17,6 @@ namespace Blockchain.Tests
         {
             // Arrange.
             var text = "https://shvanoff.ru/";
-            var genesisHash = "680b114be22118e3ecad88e3ad853235ca36014f912552742c5efbf705d39e78";
             var user = User.GetCurrentUser();
             var data = new Data(text, DataType.Content);
 
@@ -27,7 +26,6 @@ namespace Blockchain.Tests
 
             // Assert.
             Assert.IsTrue(genesisBlock.IsCorrect());
-            Assert.AreEqual(genesisHash, genesisBlock.Hash);
             Assert.IsTrue(block.IsCorrect());
         }
     }

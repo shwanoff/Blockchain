@@ -1,6 +1,5 @@
 ﻿using Blockchain.Algorithms;
 using System;
-using System.Diagnostics.Contracts;
 using Blockchain.Exceptions;
 
 namespace Blockchain
@@ -59,37 +58,39 @@ namespace Blockchain
         /// <param name="user"> Идентификатор пользователя, создавшего блок. </param>
         public Block(Block previousBlock, Data data, User user, IAlgorithm algorithm = null)
         {
-            if(previousBlock == null)
+            #region Requires
+            if (previousBlock == null)
             {
-                throw new MethodRequiresException(nameof(previousBlock));
+                throw new MethodRequiresException(nameof(previousBlock), "Предыдущий блок не может быть равен null.");
             }
 
             if(!previousBlock.IsCorrect())
             {
-                throw new MethodRequiresException(nameof(previousBlock));
+                throw new MethodRequiresException(nameof(previousBlock), "Предыдущий блок некорректный.");
             }
 
             if(data == null)
             {
-                throw new MethodRequiresException(nameof(data));
+                throw new MethodRequiresException(nameof(data), "Данные не могут быть равны null.");
             }
 
             if(!data.IsCorrect())
             {
-                throw new MethodRequiresException(nameof(data));
+                throw new MethodRequiresException(nameof(data), "Данные некорректные.");
             }
 
             if(user == null)
             {
-                throw new MethodRequiresException(nameof(user));
+                throw new MethodRequiresException(nameof(user), "Пользователь не может быть равен null.");
             }
 
             if(!user.IsCorrect())
             {
-                throw new MethodRequiresException(nameof(user));
+                throw new MethodRequiresException(nameof(user), "Пользователь некорректный.");
             }
+            #endregion
 
-            if(algorithm != null)
+            if (algorithm != null)
             {
                 _algorithm = algorithm;
             }
@@ -104,7 +105,7 @@ namespace Blockchain
 
             if (!this.IsCorrect())
             {
-                throw new MethodResultException(nameof(Block));
+                throw new MethodResultException(nameof(Block), "Ошибка создания блока. Блок некорректный.");
             }
         }
 
@@ -130,7 +131,7 @@ namespace Blockchain
 
             if (!this.IsCorrect())
             {
-                throw new MethodResultException(nameof(Block));
+                throw new MethodResultException(nameof(Block), "Ошибка создания генезис блока. Блок некорректный.");
             }
         }
 

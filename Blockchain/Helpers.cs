@@ -1,7 +1,10 @@
 ﻿using Blockchain.Algorithms;
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization.Json;
+using System.Text;
 
 namespace Blockchain
 {
@@ -63,6 +66,18 @@ namespace Blockchain
             }
 
             return true;
+        }
+
+        public static string GetJson(this IHashable component)
+        {
+            var jsonFormatter = new DataContractJsonSerializer(component.GetType());
+
+            using (var ms = new MemoryStream())
+            {
+                jsonFormatter.WriteObject(ms, component);
+                var jsonString = Encoding.Default.GetString((ms.ToArray()));
+                return jsonString;
+            }
         }
     }
 }

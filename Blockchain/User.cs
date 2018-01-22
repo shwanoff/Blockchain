@@ -1,13 +1,17 @@
 ﻿using Blockchain.Algorithms;
 using Blockchain.Exceptions;
 using System;
-using System.Linq;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
 
 namespace Blockchain
 {
     /// <summary>
     /// Пользователь системы.
     /// </summary>
+    [DataContract]
     public class User : IHashable
     {
         /// <summary>
@@ -18,26 +22,31 @@ namespace Blockchain
         /// <summary>
         /// Идентификатор пользователя.
         /// </summary>
+        [DataMember]
         public Guid Code { get; private set; }
 
         /// <summary>
         /// Логин пользователя.
         /// </summary>
+        [DataMember]
         public string Login { get; private set; }
 
         /// <summary>
         /// Разрешения пользователя.
         /// </summary>
+        [DataMember]
         public UserRole Role { get; private set; }
 
         /// <summary>
         /// Хеш пароля пользователя.
         /// </summary>
+        [DataMember]
         public string Password { get; private set; }
 
         /// <summary>
         /// Хеш пользователя.
         /// </summary>
+        [DataMember]
         public string Hash { get; private set; }
 
         /// <summary>
@@ -63,12 +72,12 @@ namespace Blockchain
             // Проверяем предусловия.
             if(string.IsNullOrEmpty(login))
             {
-                throw new MethodRequiresException(nameof(login));
+                throw new MethodRequiresException(nameof(login), "Логин не может быть пустым или равным null.");
             }
 
             if(string.IsNullOrEmpty(password))
             {
-                throw new MethodRequiresException(nameof(password));
+                throw new MethodRequiresException(nameof(password), "Пароль не может быть пустым или равным null.");
             }
 
             if(algorithm != null)
@@ -85,7 +94,7 @@ namespace Blockchain
 
             if(!this.IsCorrect())
             {
-                throw new MethodResultException(nameof(User));
+                throw new MethodResultException(nameof(User), "Ошибка создания пользователя. Пользователь некорректный.");
             }
         }
 
@@ -128,13 +137,8 @@ namespace Blockchain
         /// <returns> Блок содержащий информацию о пользователе. </returns>
         public Data GetData()
         {
-            // TODO: Создавать json
-            string text = "User\r\n";
-            text += $"Login: {Login}\r\n";
-            text += $"Password: {Password}\r\n";
-            text += $"Role: {(int)Role}";
-
-            var data = new Data(text, DataType.User, _algorithm);
+            var jsonString = this.GetJson();
+            var data = new Data(jsonString, DataType.User, _algorithm);
             return data;
         }
     }

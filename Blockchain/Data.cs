@@ -1,11 +1,13 @@
 ﻿using Blockchain.Algorithms;
 using Blockchain.Exceptions;
+using System.Runtime.Serialization;
 
 namespace Blockchain
 {
     /// <summary>
     /// Данные хранимые в блоке из цепочки блоков.
     /// </summary>
+    [DataContract]
     public class Data : IHashable
     {
         /// <summary>
@@ -16,16 +18,19 @@ namespace Blockchain
         /// <summary>
         /// Содержимое блока.
         /// </summary>
+        [DataMember]
         public string Content { get; private set; }
 
         /// <summary>
         /// Хеш данных.
         /// </summary>
+        [DataMember]
         public string Hash { get; private set; }
 
         /// <summary>
         /// Тип хранимых данных.
         /// </summary>
+        [DataMember]
         public DataType Type { get; private set; }
 
         /// <summary>
@@ -38,7 +43,7 @@ namespace Blockchain
             // Проверяем предусловия.
             if(string.IsNullOrEmpty(content))
             {
-                throw new MethodRequiresException(nameof(content));
+                throw new MethodRequiresException(nameof(content), "Данные не могут быть пустыми или равняться null");
             }
 
             // Если не указан алгоритм, то берем по умолчанию.
@@ -54,7 +59,7 @@ namespace Blockchain
 
             if (!this.IsCorrect())
             {
-                throw new MethodResultException(nameof(Data));
+                throw new MethodResultException(nameof(Data), "Ошибка создания данных. Данные некорректны.");
             }
         }
 
@@ -76,6 +81,12 @@ namespace Blockchain
         public override string ToString()
         {
             return Content;
+        }
+
+        public string Json()
+        {
+            var jsonString = this.GetJson();
+            return jsonString;
         }
     }
 }
