@@ -22,26 +22,5 @@ namespace Blockchain.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public ushort Version {
-            get {
-                return ((ushort)(this["Version"]));
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("77.241.23.27")]
-        public string Hosts {
-            get {
-                return ((string)(this["Hosts"]));
-            }
-            set {
-                this["Hosts"] = value;
-            }
-        }
     }
 }

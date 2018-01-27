@@ -95,9 +95,9 @@ namespace Blockchain
                 _algorithm = algorithm;
             }
 
-            Version = Properties.Settings.Default.Version;
+            Version = 1;
             Code = Guid.NewGuid();
-            CreatedOn = DateTime.Now;
+            CreatedOn = DateTime.Now.ToUniversalTime();
             PreviousHash = previousBlock.Hash;
             Data = data;
             User = user;
@@ -123,7 +123,7 @@ namespace Blockchain
 
             Version = 1;
             Code = Guid.Parse("8002EFBA-72FA-4156-B7F2-BBB818160E64");
-            CreatedOn = DateTime.Parse("2018-01-01");
+            CreatedOn = DateTime.UtcNow;
             User = new User("admin", "admin", UserRole.Admin);
             PreviousHash = _algorithm.GetHash("79098738-8772-4F0A-998D-9EC7737720F4");
             Data = User.GetData();

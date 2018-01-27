@@ -171,7 +171,7 @@ namespace Blockchain
         /// Добавить данные в цепочку блоков.
         /// </summary>
         /// <param name="text"> Добавляемые данные. </param>
-        public void AddContent(string text)
+        public Block AddContent(string text)
         {
             if(string.IsNullOrEmpty(text))
             {
@@ -183,6 +183,8 @@ namespace Blockchain
             var block = new Block(PreviousBlock, data, User.GetCurrentUser(), _algorithm);
 
             AddBlock(block);
+
+            return block;
         }
 
         /// <summary>

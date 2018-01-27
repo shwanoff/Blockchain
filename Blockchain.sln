@@ -11,6 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockchainService", "Blockc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockchainData", "BlockchainData\BlockchainData.csproj", "{B1D94356-F349-4948-A355-65C6F8EDCE8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockchainExplorerDesktop", "BlockchainExplorerDesktop\BlockchainExplorerDesktop.csproj", "{6295EE9D-2486-43A4-93BB-82E6DDF9CD7E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{00AF20D9-5C8B-4E0A-BA58-4FFF5195A12D} = {00AF20D9-5C8B-4E0A-BA58-4FFF5195A12D}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +38,10 @@ Global
 		{B1D94356-F349-4948-A355-65C6F8EDCE8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1D94356-F349-4948-A355-65C6F8EDCE8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1D94356-F349-4948-A355-65C6F8EDCE8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6295EE9D-2486-43A4-93BB-82E6DDF9CD7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6295EE9D-2486-43A4-93BB-82E6DDF9CD7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6295EE9D-2486-43A4-93BB-82E6DDF9CD7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6295EE9D-2486-43A4-93BB-82E6DDF9CD7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

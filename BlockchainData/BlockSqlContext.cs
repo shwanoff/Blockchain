@@ -11,7 +11,7 @@ namespace BlockchainData
         /// Создать экземпляр контекста данных SQL.
         /// </summary>
         public BlockSqlContext()
-            : base("BlockchainConnection")
+            : base("BlockchainLocalConnection")
         {
         }
 
