@@ -12,7 +12,7 @@ namespace BlockchainData
         /// <summary>
         /// Версия спецификации блока.
         /// </summary>
-        public ushort Version { get; set; }
+        public int Version { get; set; }
 
         /// <summary>
         /// Псевдоуникальный 128-битный идентификатор.
@@ -22,7 +22,7 @@ namespace BlockchainData
         /// <summary>
         /// Момент создания блока.
         /// </summary>
-        public ulong CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
 
         /// <summary>
         /// Хеш блока.

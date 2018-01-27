@@ -21,6 +21,9 @@ namespace Blockchain.Tests
             Assert.IsTrue(chain.CheckCorrect());
         }
 
+        /// <summary>
+        /// Проверяем добавление данных.
+        /// </summary>
         [TestMethod()]
         public void AddContentTest()
         {
@@ -33,9 +36,6 @@ namespace Blockchain.Tests
             chain.AddUser(login, password);
 
             Assert.IsTrue(chain.CheckCorrect());
-            Assert.AreEqual(1, chain.ContentBlocks.Count());
-            Assert.AreEqual(text, chain.ContentBlocks.Single().Data.Content);
-            Assert.AreEqual(2, chain.UserBlocks.Count());
         }
     }
 }

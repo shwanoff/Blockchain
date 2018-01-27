@@ -8,7 +8,7 @@ namespace Blockchain.Algorithms
     /// <summary>
     /// Интерфейс, который должен быть реализован алгоритмом хеширования.
     /// </summary>
-    [ContractClass(typeof(IAlgorithmContract))]
+    [ContractClass(typeof(AlgorithmContract))]
     public interface IAlgorithm
     {
         /// <summary>
@@ -31,7 +31,7 @@ namespace Blockchain.Algorithms
     /// Класс, определяющий контракты для интерфейса.
     /// </summary>
     [ContractClassFor(typeof(IAlgorithm))]
-    internal abstract class IAlgorithmContract : IAlgorithm
+    internal abstract class AlgorithmContract : IAlgorithm
     {
         string IAlgorithm.GetHash(string data)
         {

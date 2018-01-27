@@ -68,6 +68,11 @@ namespace Blockchain
             return true;
         }
 
+        /// <summary>
+        /// Получение данных в формате JSON из хешируемого компонента.
+        /// </summary>
+        /// <param name="component"> Хешируемый компонент. </param>
+        /// <returns> Данные компонента в формате JSON. </returns>
         public static string GetJson(this IHashable component)
         {
             var jsonFormatter = new DataContractJsonSerializer(component.GetType());
@@ -77,6 +82,24 @@ namespace Blockchain
                 jsonFormatter.WriteObject(ms, component);
                 var jsonString = Encoding.Default.GetString((ms.ToArray()));
                 return jsonString;
+            }
+        }
+
+        /// <summary>
+        /// Десериализовать хешируемый компонент из JSON данных.
+        /// </summary>
+        /// <param name="type"> Тип хешируемого компонента. </param>
+        /// <param name="json"> Строка с данными хешируемого компонента в формате JSON. </param>
+        /// <returns> Десериализованный хешируемый компонент. </returns>
+        public static IHashable Deserialize(Type type, string json)
+        {
+            var jsonFormatter = new DataContractJsonSerializer(type);
+
+            using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
+            {
+                var deserializer = new DataContractJsonSerializer(type);
+                var result = (IHashable)deserializer.ReadObject(ms);
+                return result;
             }
         }
     }

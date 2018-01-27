@@ -1,10 +1,7 @@
 ﻿using Blockchain.Algorithms;
 using Blockchain.Exceptions;
 using System;
-using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.Text;
 
 namespace Blockchain
 {
@@ -99,6 +96,46 @@ namespace Blockchain
         }
 
         /// <summary>
+        /// Создать экземпляр пользователя на основе блока.
+        /// </summary>
+        /// <param name="block"> Блок цепочки, содержащий информацию о пользователе. </param>
+        public User(Block block)
+        {
+            if(block == null)
+            {
+                throw new MethodRequiresException(nameof(block), "Блок не может быть равен null");
+            }
+
+            if(!block.IsCorrect())
+            {
+                throw new MethodRequiresException(nameof(block), "Блок некорректный");
+            }
+
+            if(block.Data == null)
+            {
+                throw new MethodRequiresException(nameof(block), "Данные блока не могут быть равны null");
+            }
+
+            if(block.Data.Type != DataType.User)
+            {
+                throw new MethodRequiresException(nameof(block), "Некоректный тип данных блока.");
+            }
+
+            var user = Deserialize(block.Data.Content);
+
+            Code = user.Code;
+            Login = user.Login;
+            Password = user.Password;
+            Role = user.Role;
+            Hash = user.Hash;
+
+            if(!this.IsCorrect())
+            {
+                throw new MethodResultException(nameof(User), "Не корректный пользователь.");
+            }
+        }
+
+        /// <summary>
         /// Приведение объекта к строке.
         /// </summary>
         /// <returns> Имя пользователя. </returns>
@@ -140,6 +177,24 @@ namespace Blockchain
             var jsonString = this.GetJson();
             var data = new Data(jsonString, DataType.User, _algorithm);
             return data;
+        }
+
+        /// <summary>
+        /// Десериализация пользователя из JSON.
+        /// </summary>
+        /// <param name="json"> Строка с данными пользователя в формате JSON. </param>
+        /// <returns> Объект пользователя. </returns>
+        public static User Deserialize(string json)
+        {
+            if(string.IsNullOrEmpty(json))
+            {
+                throw new MethodRequiresException(nameof(json), "Строка десеализации не может быть пустой или равной null.");
+            }
+
+            var user = Helpers.Deserialize(typeof(User), json);
+
+            return user as User ??
+                throw new FormatException("Не удалось выполнить пользователя данных.");
         }
     }
 }

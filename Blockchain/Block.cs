@@ -17,7 +17,7 @@ namespace Blockchain
         /// <summary>
         /// Версия спецификации блока.
         /// </summary>
-        public ushort Version { get; private set; }
+        public int Version { get; private set; }
 
         /// <summary>
         /// Псевдоуникальный 128-битный идентификатор.
@@ -27,7 +27,7 @@ namespace Blockchain
         /// <summary>
         /// Момент создания блока.
         /// </summary>
-        public ulong CreatedOn { get; private set; }
+        public DateTime CreatedOn { get; private set; }
 
         /// <summary>
         /// Хеш блока.
@@ -97,7 +97,7 @@ namespace Blockchain
 
             Version = Properties.Settings.Default.Version;
             Code = Guid.NewGuid();
-            CreatedOn = (ulong)DateTime.Now.Ticks;
+            CreatedOn = DateTime.Now;
             PreviousHash = previousBlock.Hash;
             Data = data;
             User = user;
@@ -123,7 +123,7 @@ namespace Blockchain
 
             Version = 1;
             Code = Guid.Parse("8002EFBA-72FA-4156-B7F2-BBB818160E64");
-            CreatedOn = (ulong)DateTime.Parse("2018-01-01").Ticks;
+            CreatedOn = DateTime.Parse("2018-01-01");
             User = new User("admin", "admin", UserRole.Admin);
             PreviousHash = _algorithm.GetHash("79098738-8772-4F0A-998D-9EC7737720F4");
             Data = User.GetData();
@@ -132,6 +132,31 @@ namespace Blockchain
             if (!this.IsCorrect())
             {
                 throw new MethodResultException(nameof(Block), "Ошибка создания генезис блока. Блок некорректный.");
+            }
+        }
+
+        /// <summary>
+        /// Создание блока цепочки из блока провайдера данных.
+        /// </summary>
+        /// <param name="block"> Блок провайдера данных. </param>
+        public Block(BlockchainData.Block block)
+        {
+            if(block == null)
+            {
+                throw new MethodRequiresException(nameof(block), "Блок данных провайдера данных не может быть равен null.");
+            }
+
+            Version = block.Version;
+            Code = Guid.Parse(block.Code);
+            CreatedOn = block.CreatedOn;
+            User = User.Deserialize(block.User);
+            PreviousHash = block.PreviousHash;
+            Data = Data.Deserialize(block.Data);
+            Hash = block.Hash;
+
+            if (!this.IsCorrect())
+            {
+                throw new MethodResultException(nameof(Block), "Ошибка создания блока из блока провайдера данных. Блок некорректный.");
             }
         }
 

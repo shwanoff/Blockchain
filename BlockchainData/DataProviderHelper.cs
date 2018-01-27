@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BlockchainData
+﻿namespace BlockchainData
 {
+    /// <summary>
+    /// Вспомогательный класс, содержащий методы для упрощения написания кода.
+    /// </summary>
     public static class DataProviderHelper
     {
+        /// <summary>
+        /// Получить провайдер данных по умолчанию.
+        /// </summary>
+        /// <returns></returns>
         public static IDataProvider GetDefaultDataProvider()
         {
             return new SqlDataProvider();

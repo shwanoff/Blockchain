@@ -1,5 +1,6 @@
 ﻿using Blockchain.Algorithms;
 using Blockchain.Exceptions;
+using System;
 using System.Runtime.Serialization;
 
 namespace Blockchain
@@ -64,6 +65,19 @@ namespace Blockchain
         }
 
         /// <summary>
+        /// Десериализация данных из JSON.
+        /// </summary>
+        /// <param name="json"> Строка с данными в формате JSON. </param>
+        /// <returns> Объект данных. </returns>
+        public static Data Deserialize(string json)
+        {
+            var data =  Helpers.Deserialize(typeof(Data), json);
+            
+            return data as Data ?? 
+                throw new FormatException("Не удалось выполнить десериализацию данных.");
+        }
+
+        /// <summary>
         /// Получить данные из объекта, на основе которых будет строиться хеш.
         /// </summary>
         /// <returns> Хешируемые данные. </returns>
@@ -83,6 +97,10 @@ namespace Blockchain
             return Content;
         }
 
+        /// <summary>
+        /// Получить данные в формате JSON.
+        /// </summary>
+        /// <returns> Строка с данными в формате JSON. </returns>
         public string Json()
         {
             var jsonString = this.GetJson();

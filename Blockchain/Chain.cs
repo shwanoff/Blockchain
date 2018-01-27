@@ -17,12 +17,30 @@ namespace Blockchain
         /// </summary>
         private IAlgorithm _algorithm = AlgorithmHelper.GetDefaultAlgorithm();
 
+        /// <summary>
+        /// Провайдер данных.
+        /// </summary>
         private IDataProvider _dataProvider = DataProviderHelper.GetDefaultDataProvider();
 
         /// <summary>
         /// Список, содержащий в себе все блоки.
         /// </summary>
-        private List<Block> _blockChain = null;
+        private List<Block> _blockChain = new List<Block>();
+
+        /// <summary>
+        /// Список IP адресов хостов.
+        /// </summary>
+        private List<string> _nodes = new List<string>();
+
+        /// <summary>
+        /// Список пользователей.
+        /// </summary>
+        private List<User> _users = new List<User>();
+
+        /// <summary>
+        /// Список данных.
+        /// </summary>
+        private List<Data> _data = new List<Data>();
 
         /// <summary>
         /// Цепочка блоков.
@@ -35,14 +53,19 @@ namespace Blockchain
         public Block PreviousBlock => _blockChain.Last();
 
         /// <summary>
-        /// Блоки, содержащие информационные данные.
+        /// Информационные данные.
         /// </summary>
-        public IEnumerable<Block> ContentBlocks => _blockChain.Where(block => block.Data.Type == DataType.Content);
+        public IEnumerable<Data> Content => _data;
 
         /// <summary>
-        /// Блоки, содержащие информацию о пользователях.
+        /// Пользователи системы.
         /// </summary>
-        public IEnumerable<Block> UserBlocks => _blockChain.Where(block => block.Data.Type == DataType.User);
+        public IEnumerable<User> Users => _users;
+
+        /// <summary>
+        /// IP адреса серверов.
+        /// </summary>
+        public IEnumerable<string> Nodes => _nodes;
 
         /// <summary>
         /// Создать новый экземпляр цепочки блоков.
@@ -75,10 +98,36 @@ namespace Blockchain
         }
 
         /// <summary>
+        /// Создание цепочки блоков из списка блоков провайдера данных.
+        /// </summary>
+        /// <param name="blocks"> Блоки провайдера данных. </param>
+        private Chain(List<BlockchainData.Block> blocks)
+        {
+            if(blocks == null)
+            {
+                throw new MethodRequiresException(nameof(blocks), "Список блоков провайдера данных не может быть равным null.");
+            }
+
+            foreach(var block in blocks)
+            {
+                var b = new Block(block);
+                _blockChain.Add(b);
+
+                AddDataInList(b);
+            }
+
+            if (!CheckCorrect())
+            {
+                throw new MethodResultException(nameof(Chain), "Ошибка создания цепочки блоков. Цепочка некорректна.");
+            }
+        }
+
+        /// <summary>
         /// Создать новую пустую цепочку блоков.
         /// </summary>
         private void CreateNewBlockChain()
         {
+            _dataProvider.Crear();
             _blockChain = new List<Block>();
             var genesisBlock = Block.GetGenesisBlock(_algorithm);
             AddBlock(genesisBlock);
@@ -107,7 +156,14 @@ namespace Blockchain
         /// <returns> Цепочка блоков. </returns>
         private Chain GetGlobalChein()
         {
-            // TODO: реализовать получение данных.
+            // TODO: Реализовать получение хоста из конфигурационных файлов.
+            var blocks = _dataProvider.GetBlocks();
+            if (blocks.Count > 0)
+            {
+                var chain = new Chain(blocks);
+                return chain;
+            }
+
             return null;
         }
 
@@ -135,7 +191,7 @@ namespace Blockchain
         /// <param name="login"> Имя пользователя. </param>
         /// <param name="password"> Пароль пользователя. </param>
         /// <param name="role"> Права доступа пользователя. </param>
-        public void AddUser(string login, string password, UserRole role = UserRole.Reader)
+        public bool AddUser(string login, string password, UserRole role = UserRole.Reader)
         {
             if (string.IsNullOrEmpty(login))
             {
@@ -148,15 +204,16 @@ namespace Blockchain
             }
 
             // TODO: Исправить. В данном случае сработает если был добавлен shwan1 и будут пытаться добавить shwan.
-            if(UserBlocks.Any(b => b.Data.Content.Contains(login)))
+            if(Users.Any(b => b.Login == login))
             {
-                throw new MethodRequiresException(nameof(login), "Пользователь с таким логином уже добавлен в систему.");
+                return false;
             }
 
             var user = new User(login, password, role);
             var data = user.GetData();
             var block = new Block(PreviousBlock, data, User.GetCurrentUser());
             AddBlock(block);
+            return true;
         }
 
         /// <summary>
@@ -173,10 +230,34 @@ namespace Blockchain
             // TODO: Реализовать транзакцию.
             _blockChain.Add(block);
             _dataProvider.AddBlock(block.Version, block.Code.ToString(), block.CreatedOn, block.Hash, block.PreviousHash, block.Data.GetJson(), block.User.GetJson());
+            AddDataInList(block);
 
             if(!CheckCorrect())
             {
                 throw new MethodResultException(nameof(Chain), "Была нарушена корректность после добавления блока.");
+            }
+        }
+
+        /// <summary>
+        /// Добавление данных из блоков в списки быстрого доступа.
+        /// </summary>
+        /// <param name="block"> Блок. </param>
+        private void AddDataInList(Block block)
+        {
+            switch (block.Data.Type)
+            {
+                case DataType.Content:
+                    _data.Add(block.Data);
+                    break;
+                case DataType.User:
+                    var user = new User(block);
+                    _users.Add(user);
+                    break;
+                case DataType.Node:
+                    _nodes.Add(block.Data.Content);
+                    break;
+                default:
+                    throw new MethodRequiresException(nameof(block), "Неизвестный тип блока.");
             }
         }
     }
