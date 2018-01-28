@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connected Services\BlockchainServer\Reference.cs">
+    <Compile Include="Connected Services\BlockchainService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -72,20 +72,23 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="Connected Services\BlockchainServer\BlockchainExplorerDesktop.BlockchainServer.Block.datasource">
+    <None Include="Connected Services\BlockchainService\BlockchainExplorerDesktop.BlockchainService.Block.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\BlockchainServer\BlockchainService.wsdl" />
-    <None Include="Connected Services\BlockchainServer\BlockchainService.xsd">
+    <None Include="Connected Services\BlockchainService\BlockchainExplorerDesktop.BlockchainService.User.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\BlockchainService\BlockchainService.wsdl" />
+    <None Include="Connected Services\BlockchainService\BlockchainService.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\BlockchainServer\BlockchainService1.xsd">
+    <None Include="Connected Services\BlockchainService\BlockchainService1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\BlockchainServer\BlockchainService2.xsd">
+    <None Include="Connected Services\BlockchainService\BlockchainService2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\BlockchainServer\BlockchainService3.xsd">
+    <None Include="Connected Services\BlockchainService\BlockchainService3.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\Settings.settings">
@@ -105,19 +108,19 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Connected Services\BlockchainServer\" />
+    <WCFMetadataStorage Include="Connected Services\BlockchainService\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\BlockchainServer\BlockchainService.disco" />
+    <None Include="Connected Services\BlockchainService\BlockchainService.disco" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\BlockchainServer\configuration91.svcinfo" />
+    <None Include="Connected Services\BlockchainService\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\BlockchainServer\configuration.svcinfo" />
+    <None Include="Connected Services\BlockchainService\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\BlockchainServer\Reference.svcmap">
+    <None Include="Connected Services\BlockchainService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

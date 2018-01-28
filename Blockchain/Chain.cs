@@ -83,6 +83,11 @@ namespace Blockchain
                 if(globalChainIsCorrect)
                 {
                     _blockChain = globalChain._blockChain;
+                    _algorithm = globalChain._algorithm;
+                    _dataProvider = globalChain._dataProvider;
+                    _nodes = globalChain._nodes;
+                    _data = globalChain._data;
+                    _users = globalChain._users;
                 }
                 else
                 {
@@ -193,7 +198,7 @@ namespace Blockchain
         /// <param name="login"> Имя пользователя. </param>
         /// <param name="password"> Пароль пользователя. </param>
         /// <param name="role"> Права доступа пользователя. </param>
-        public bool AddUser(string login, string password, UserRole role = UserRole.Reader)
+        public Block AddUser(string login, string password, UserRole role = UserRole.Reader)
         {
             if (string.IsNullOrEmpty(login))
             {
@@ -205,17 +210,62 @@ namespace Blockchain
                 throw new MethodRequiresException(nameof(password), "Пароль не может быть пустым или равным null.");
             }
 
-            // TODO: Исправить. В данном случае сработает если был добавлен shwan1 и будут пытаться добавить shwan.
             if(Users.Any(b => b.Login == login))
             {
-                return false;
+                return null;
             }
 
             var user = new User(login, password, role);
             var data = user.GetData();
             var block = new Block(PreviousBlock, data, User.GetCurrentUser());
             AddBlock(block);
-            return true;
+            return block;
+        }
+
+        public Block AddHost(string ip)
+        {
+            if (string.IsNullOrEmpty(ip))
+            {
+                throw new MethodRequiresException(nameof(ip), "IP адрес хоста не может быть пустым или равным null.");
+            }
+
+            // TODO: Добавить проверку формата ip адреса
+
+
+            var data = new Data(ip, DataType.Node);
+
+            var block = new Block(PreviousBlock, data, User.GetCurrentUser(), _algorithm);
+
+            AddBlock(block);
+
+            return block;
+        }
+
+        public User LoginUser(string login, string password)
+        {
+            if (string.IsNullOrEmpty(login))
+            {
+                throw new MethodRequiresException(nameof(login), "Логин не может быть пустым или равным null.");
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new MethodRequiresException(nameof(password), "Пароль не может быть пустым или равным null.");
+            }
+
+            var user = Users.SingleOrDefault(b => b.Login == login);
+            if(user == null)
+            {
+                return null;
+            }
+
+            var passwordHash = password.GetHash();
+            if(user.Password != passwordHash)
+            {
+                return null;
+            }
+
+            return user;
         }
 
         /// <summary>

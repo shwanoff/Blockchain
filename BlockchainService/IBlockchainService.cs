@@ -1,6 +1,7 @@
 ﻿using Blockchain;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 using System.Threading.Tasks;
 
 namespace BlockchainService
@@ -8,22 +9,24 @@ namespace BlockchainService
     [ServiceContract]
     public interface IBlockchainService
     {
-        
-        bool AddUser(string login, string password, UserRole role = UserRole.Reader);
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/AddHost/{ip}", BodyStyle = WebMessageBodyStyle.Wrapped, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Task<Block> AddHostAsync(string ip);
 
         [OperationContract]
-        Task<bool> AddUserAsync(string login, string password, UserRole role = UserRole.Reader);
-
-        
-        Block AddData(string text);
+        [WebInvoke(Method = "GET", UriTemplate = "/AddUserAsync/{login}&{password}&{role}", BodyStyle = WebMessageBodyStyle.Wrapped, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Task<Block> AddUserAsync(string login, string password, string role);
 
         [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/AddData/{text}", BodyStyle = WebMessageBodyStyle.Wrapped, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         Task<Block> AddDataAsync(string text);
 
-        
-        List<Block> GetBlocks();
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/Login/{login}&{password}", BodyStyle = WebMessageBodyStyle.Wrapped, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Task<User> LoginAsync(string login, string password);
 
         [OperationContract]
-        Task<List<Block>> GetBlocksAsync();
+        [WebInvoke(Method = "GET", UriTemplate = "/GetChain/", BodyStyle = WebMessageBodyStyle.Wrapped, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Task<List<Block>> GetChainAsync();
     }
 }

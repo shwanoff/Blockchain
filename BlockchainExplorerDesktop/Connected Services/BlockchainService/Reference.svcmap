@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="fb070790-9c5a-4715-b82c-d9a466a59835" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:28451/BlockchainService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="BlockchainService.xsd" MetadataType="Schema" ID="83f2c76b-7c27-4a3d-bd2d-ae83972d96a8" SourceId="1" SourceUrl="http://localhost:28451/BlockchainService.svc?xsd=xsd0" />
+    <MetadataFile FileName="BlockchainService1.xsd" MetadataType="Schema" ID="f5c39de9-55e0-40c3-a60d-7b8e3405b3cf" SourceId="1" SourceUrl="http://localhost:28451/BlockchainService.svc?xsd=xsd3" />
+    <MetadataFile FileName="BlockchainService2.xsd" MetadataType="Schema" ID="93c9b82d-49e2-4955-9b4c-2483f7cabc51" SourceId="1" SourceUrl="http://localhost:28451/BlockchainService.svc?xsd=xsd2" />
+    <MetadataFile FileName="BlockchainService.disco" MetadataType="Disco" ID="1ac2448e-61dd-48d1-98aa-1afb80144c20" SourceId="1" SourceUrl="http://localhost:28451/BlockchainService.svc?disco" />
+    <MetadataFile FileName="BlockchainService.wsdl" MetadataType="Wsdl" ID="8e896cb7-9e2c-4040-9eb1-2db86f1c40a2" SourceId="1" SourceUrl="http://localhost:28451/BlockchainService.svc?wsdl" />
+    <MetadataFile FileName="BlockchainService3.xsd" MetadataType="Schema" ID="e4edd645-b870-4fbf-bf2a-f4e8b7ec12fa" SourceId="1" SourceUrl="http://localhost:28451/BlockchainService.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

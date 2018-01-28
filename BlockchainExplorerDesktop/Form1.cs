@@ -1,11 +1,5 @@
-﻿using BlockchainExplorerDesktop.BlockchainServer;
+﻿using BlockchainExplorerDesktop.BlockchainService;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -29,7 +23,7 @@ namespace BlockchainExplorerDesktop
         {
             return await Task.Run(() =>
             {
-                var blocks = client.GetBlocks();
+                var blocks = client.GetChain();
                 foreach (var block in blocks)
                 {
                     listBox1.BeginInvoke((Action)delegate { listBox1.Items.Add(block); });
