@@ -17,12 +17,6 @@ namespace Blockchain
         private IAlgorithm _algorithm = AlgorithmHelper.GetDefaultAlgorithm();
 
         /// <summary>
-        /// Идентификатор пользователя.
-        /// </summary>
-        [DataMember]
-        public Guid Code { get; private set; }
-
-        /// <summary>
         /// Логин пользователя.
         /// </summary>
         [DataMember]
@@ -64,7 +58,7 @@ namespace Blockchain
         /// <param name="password"> Пароль пользователя. </param>
         /// <param name="role"> Права пользователя. </param>
         /// <param name="algorithm"> Алгоритм хеширования. </param>
-        public User(string login, string password, UserRole role, IAlgorithm algorithm = null)
+        public User(string login, string password, UserRole role, IAlgorithm algorithm = null, Guid? code = null)
         {
             // Проверяем предусловия.
             if(string.IsNullOrEmpty(login))
@@ -83,7 +77,6 @@ namespace Blockchain
             }
 
             // Устанавливаем значения.
-            Code = Guid.NewGuid();
             Login = login;
             Password = password.GetHash(_algorithm);
             Role = role;
@@ -123,7 +116,6 @@ namespace Blockchain
 
             var user = Deserialize(block.Data.Content);
 
-            Code = user.Code;
             Login = user.Login;
             Password = user.Password;
             Role = user.Role;
@@ -160,8 +152,7 @@ namespace Blockchain
         /// <returns> Хешируемые данные. </returns>
         public string GetStringForHash()
         {
-            var text = Code.ToString();
-            text += Login;
+            var text = Login;
             text += Password;
             text += Role;
 

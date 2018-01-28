@@ -12,9 +12,9 @@ namespace BlockchainService
             return await Task.Run(() => AddData(text));
         }
 
-        public async Task<Block> AddUserAsync(string login, string password, string role)
+        public async Task<Block> AddUserAsync(string login, string password, string role, string code)
         {
-            return await Task.Run(() => AddUser(login, password, role));
+            return await Task.Run(() => AddUser(login, password, role, code));
         }
 
         public async Task<Block> AddHostAsync(string ip)

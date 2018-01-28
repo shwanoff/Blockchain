@@ -20,11 +20,6 @@ namespace Blockchain
         public int Version { get; private set; }
 
         /// <summary>
-        /// Псевдоуникальный 128-битный идентификатор.
-        /// </summary>
-        public Guid Code { get; private set; }
-
-        /// <summary>
         /// Момент создания блока.
         /// </summary>
         public DateTime CreatedOn { get; private set; }
@@ -96,7 +91,6 @@ namespace Blockchain
             }
 
             Version = 1;
-            Code = Guid.NewGuid();
             CreatedOn = DateTime.Now.ToUniversalTime();
             PreviousHash = previousBlock.Hash;
             Data = data;
@@ -122,7 +116,6 @@ namespace Blockchain
             }
 
             Version = 1;
-            Code = Guid.Parse("8002EFBA-72FA-4156-B7F2-BBB818160E64");
             CreatedOn = DateTime.UtcNow;
             User = new User("admin", "admin", UserRole.Admin);
             PreviousHash = _algorithm.GetHash("79098738-8772-4F0A-998D-9EC7737720F4");
@@ -147,7 +140,6 @@ namespace Blockchain
             }
 
             Version = block.Version;
-            Code = Guid.Parse(block.Code);
             CreatedOn = block.CreatedOn;
             User = User.Deserialize(block.User);
             PreviousHash = block.PreviousHash;
@@ -184,7 +176,6 @@ namespace Blockchain
         {
             var data = "";
             data += Version;
-            data += Code;
             data += CreatedOn;
             data += PreviousHash;
             data += Data.Hash;
@@ -198,7 +189,7 @@ namespace Blockchain
         /// <returns> Идентификатор блока. </returns>
         public override string ToString()
         {
-            return Code.ToString();
+            return Hash;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace BlockchainData
         /// <param name="previousHash"> Хеш предыдущего блока. </param>
         /// <param name="data"> Данные блока. </param>
         /// <param name="user"> Данные о пользователе. </param>
-        void AddBlock(int version, string code, DateTime createdOn, string hash, string previousHash, string data, string user);
+        void AddBlock(int version, DateTime createdOn, string hash, string previousHash, string data, string user);
 
         /// <summary>
         /// Получить все блоки.
@@ -42,10 +42,9 @@ namespace BlockchainData
     [ContractClassFor(typeof(IDataProvider))]
     internal abstract class DataProviderContract : IDataProvider
     {
-        public void AddBlock(int version, string code, DateTime createdOn, string hash, string previousHash, string data, string user)
+        public void AddBlock(int version, DateTime createdOn, string hash, string previousHash, string data, string user)
         {
             Contract.Requires<ArgumentException>(version < 0, $"Не возможно создать блок данных провайдера данных. Версия не может быть меньше нуля.");
-            Contract.Requires<ArgumentNullException>(string.IsNullOrEmpty(code) ,$"Не возможно создать блок данных провайдера данных. Код не может быть пустым или равным null.");
             Contract.Requires<ArgumentNullException>(string.IsNullOrEmpty(hash), $"Не возможно создать блок данных провайдера данных. Хеш не может быть пустым или равным null.");
             Contract.Requires<ArgumentNullException>(string.IsNullOrEmpty(previousHash), $"Не возможно создать блок данных провайдера данных. Предыдущий хеш не может быть пустым или равным null.");
             Contract.Requires<ArgumentNullException>(string.IsNullOrEmpty(data), $"Не возможно создать блок данных провайдера данных. Данные не могут быть пустыми или равными null.");

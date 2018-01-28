@@ -22,7 +22,7 @@ namespace BlockchainService
                 // TODO: Добавить сообщение об ошибке в сохранение в лог.
             }
         }
-        protected Block AddUser(string login, string password, string role)
+        protected Block AddUser(string login, string password, string role, string code)
         {
             try
             {
@@ -31,9 +31,13 @@ namespace BlockchainService
                     if (Enum.IsDefined(typeof(UserRole), parseRole))
                     {
                         var r = (UserRole)parseRole;
-                        var block = Instance.Get().Chain.AddUser(login, password, r);
-                        var b = ConvertBlock(block);
-                        return b;
+
+                        if(Guid.TryParse(code, out Guid guid))
+                        {
+                            var block = Instance.Get().Chain.AddUser(login, password, r, guid);
+                            var b = ConvertBlock(block);
+                            return b;
+                        }
                     }
                 }
 
@@ -60,6 +64,8 @@ namespace BlockchainService
                 // TODO: Добавить сообщение об ошибке в сохранение в лог.
             }
         }
+
+
 
         protected User Login(string login, string password)
         {
@@ -114,7 +120,6 @@ namespace BlockchainService
             var b = new Block()
             {
                 Version = block.Version,
-                Code = block.Code.ToString(),
                 CreatedOn = block.CreatedOn,
                 Hash = block.Hash,
                 PreviousHash = block.PreviousHash,

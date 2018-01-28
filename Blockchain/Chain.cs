@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Blockchain.Exceptions;
 using BlockchainData;
+using System.Net.Http;
 
 namespace Blockchain
 {
@@ -198,7 +199,7 @@ namespace Blockchain
         /// <param name="login"> Имя пользователя. </param>
         /// <param name="password"> Пароль пользователя. </param>
         /// <param name="role"> Права доступа пользователя. </param>
-        public Block AddUser(string login, string password, UserRole role = UserRole.Reader)
+        public Block AddUser(string login, string password, UserRole role = UserRole.Reader, Guid? code = null)
         {
             if (string.IsNullOrEmpty(login))
             {
@@ -215,7 +216,7 @@ namespace Blockchain
                 return null;
             }
 
-            var user = new User(login, password, role);
+            var user = new User(login, password, role, code: code);
             var data = user.GetData();
             var block = new Block(PreviousBlock, data, User.GetCurrentUser());
             AddBlock(block);
@@ -281,7 +282,7 @@ namespace Blockchain
 
             // TODO: Реализовать транзакцию.
             _blockChain.Add(block);
-            _dataProvider.AddBlock(block.Version, block.Code.ToString(), block.CreatedOn, block.Hash, block.PreviousHash, block.Data.GetJson(), block.User.GetJson());
+            _dataProvider.AddBlock(block.Version, block.CreatedOn, block.Hash, block.PreviousHash, block.Data.GetJson(), block.User.GetJson());
             AddDataInList(block);
 
             if(!CheckCorrect())
@@ -300,16 +301,38 @@ namespace Blockchain
             {
                 case DataType.Content:
                     _data.Add(block.Data);
+                    foreach(var host in _nodes)
+                    {
+                        SendBlockToHosts(host, "AddData", block.Data.Content);
+                    }
                     break;
                 case DataType.User:
                     var user = new User(block);
                     _users.Add(user);
+                    foreach (var host in _nodes)
+                    {
+                        SendBlockToHosts(host, "AddUser", $"{user.Login}&{user.Password}&{user.Role}");
+                    }
                     break;
                 case DataType.Node:
                     _nodes.Add(block.Data.Content);
+                    foreach (var host in _nodes)
+                    {
+                        SendBlockToHosts(host, "AddHost", block.Data.Content);
+                    }
                     break;
                 default:
                     throw new MethodRequiresException(nameof(block), "Неизвестный тип блока.");
+            }
+        }
+
+        private async void SendBlockToHosts(string ip, string method, string data)
+        {
+            using (var client = new HttpClient())
+            {
+                // http://localhost:28451/BlockchainService.svc/api/getchain/
+                string repUri = $"http://{ip}/BlockchainService.svc/api/{method}/{data}/";
+                var response = await client.GetAsync(repUri);
             }
         }
     }

@@ -15,5 +15,10 @@ namespace BlockchainService
 
         [DataMember]
         public UserRole Role { get; set; }
+
+        public override string ToString()
+        {
+            return Login;
+        }
     }
 }

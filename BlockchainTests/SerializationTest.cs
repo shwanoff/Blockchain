@@ -25,7 +25,6 @@ namespace BlockchainTests
             // Assert.
             Assert.AreEqual(user.Login, resultUser.Login);
             Assert.AreEqual(user.Password, resultUser.Password);
-            Assert.AreEqual(user.Code, resultUser.Code);
             Assert.AreEqual(user.Role, resultUser.Role);
             Assert.IsTrue(resultUser.IsCorrect());
         }

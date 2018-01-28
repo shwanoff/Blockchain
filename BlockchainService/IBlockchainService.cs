@@ -14,8 +14,8 @@ namespace BlockchainService
         Task<Block> AddHostAsync(string ip);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "/AddUserAsync/{login}&{password}&{role}", BodyStyle = WebMessageBodyStyle.Wrapped, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
-        Task<Block> AddUserAsync(string login, string password, string role);
+        [WebInvoke(Method = "GET", UriTemplate = "/AddUserAsync/{login}&{password}&{role}&{code}", BodyStyle = WebMessageBodyStyle.Wrapped, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Task<Block> AddUserAsync(string login, string password, string role, string code);
 
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "/AddData/{text}", BodyStyle = WebMessageBodyStyle.Wrapped, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]

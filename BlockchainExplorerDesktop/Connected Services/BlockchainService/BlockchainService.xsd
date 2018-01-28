@@ -21,6 +21,7 @@
         <xs:element minOccurs="0" name="login" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="role" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="code" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

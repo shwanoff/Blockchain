@@ -13,20 +13,18 @@ namespace BlockchainData
         /// Добавление блока данных.
         /// </summary>
         /// <param name="version"> Версия блока. </param>
-        /// <param name="code"> Уникальный код блока. </param>
         /// <param name="createdOn"> Дата создания блока. </param>
         /// <param name="hash"> Хеш блока. </param>
         /// <param name="previousHash"> Хеш предыдущего блока. </param>
         /// <param name="data"> Данные блока. </param>
         /// <param name="user"> Данные о пользователе. </param>
-        public void AddBlock(int version, string code, DateTime createdOn, string hash, string previousHash, string data, string user)
+        public void AddBlock(int version, DateTime createdOn, string hash, string previousHash, string data, string user)
         {
             using (var db = new BlockSqlContext())
             {
                 var block = new Block()
                 {
                     Version = version,
-                    Code = code,
                     CreatedOn = createdOn,
                     Hash = hash,
                     PreviousHash = previousHash,

@@ -240,10 +240,10 @@ namespace BlockchainExplorerDesktop.BlockchainService {
         System.Threading.Tasks.Task<BlockchainExplorerDesktop.BlockchainService.Block> AddHostAsync(string ip);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBlockchainService/AddUser", ReplyAction="http://tempuri.org/IBlockchainService/AddUserResponse")]
-        BlockchainExplorerDesktop.BlockchainService.Block AddUser(string login, string password, string role);
+        BlockchainExplorerDesktop.BlockchainService.Block AddUser(string login, string password, string role, string code);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBlockchainService/AddUser", ReplyAction="http://tempuri.org/IBlockchainService/AddUserResponse")]
-        System.Threading.Tasks.Task<BlockchainExplorerDesktop.BlockchainService.Block> AddUserAsync(string login, string password, string role);
+        System.Threading.Tasks.Task<BlockchainExplorerDesktop.BlockchainService.Block> AddUserAsync(string login, string password, string role, string code);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBlockchainService/AddData", ReplyAction="http://tempuri.org/IBlockchainService/AddDataResponse")]
         BlockchainExplorerDesktop.BlockchainService.Block AddData(string text);
@@ -299,12 +299,12 @@ namespace BlockchainExplorerDesktop.BlockchainService {
             return base.Channel.AddHostAsync(ip);
         }
         
-        public BlockchainExplorerDesktop.BlockchainService.Block AddUser(string login, string password, string role) {
-            return base.Channel.AddUser(login, password, role);
+        public BlockchainExplorerDesktop.BlockchainService.Block AddUser(string login, string password, string role, string code) {
+            return base.Channel.AddUser(login, password, role, code);
         }
         
-        public System.Threading.Tasks.Task<BlockchainExplorerDesktop.BlockchainService.Block> AddUserAsync(string login, string password, string role) {
-            return base.Channel.AddUserAsync(login, password, role);
+        public System.Threading.Tasks.Task<BlockchainExplorerDesktop.BlockchainService.Block> AddUserAsync(string login, string password, string role, string code) {
+            return base.Channel.AddUserAsync(login, password, role, code);
         }
         
         public BlockchainExplorerDesktop.BlockchainService.Block AddData(string text) {
