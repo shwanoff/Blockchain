@@ -40,9 +40,6 @@ namespace BlockchainService
         {
             _chain = new Chain();
 
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
-            string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-
             
         }
 

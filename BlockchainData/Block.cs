@@ -15,11 +15,6 @@ namespace BlockchainData
         public int Version { get; set; }
 
         /// <summary>
-        /// Псевдоуникальный 128-битный идентификатор.
-        /// </summary>
-        public string Code { get; set; }
-
-        /// <summary>
         /// Момент создания блока.
         /// </summary>
         public DateTime CreatedOn { get; set; }

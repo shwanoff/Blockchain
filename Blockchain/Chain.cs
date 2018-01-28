@@ -331,8 +331,7 @@ namespace Blockchain
             using (var client = new HttpClient())
             {
                 // http://localhost:28451/BlockchainService.svc/api/getchain/
-                string repUri = $"http://{ip}/BlockchainService.svc/api/{method}/{data}/";
-                var response = await client.GetAsync(repUri);
+                string repUri = $"{ip}/BlockchainService.svc/api/{method}/{data}/";
             }
         }
     }

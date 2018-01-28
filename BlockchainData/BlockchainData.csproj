@@ -51,6 +51,11 @@
     <Compile Include="BlockSqlContext.cs" />
     <Compile Include="DataProviderHelper.cs" />
     <Compile Include="IDataProvider.cs" />
+    <Compile Include="Migrations\201801281501315_InitialCreate.cs" />
+    <Compile Include="Migrations\201801281501315_InitialCreate.Designer.cs">
+      <DependentUpon>201801281501315_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlDataProvider.cs" />
   </ItemGroup>
@@ -59,6 +64,11 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201801281501315_InitialCreate.resx">
+      <DependentUpon>201801281501315_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

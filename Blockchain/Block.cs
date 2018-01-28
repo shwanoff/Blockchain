@@ -116,7 +116,7 @@ namespace Blockchain
             }
 
             Version = 1;
-            CreatedOn = DateTime.UtcNow;
+            CreatedOn = DateTime.Parse("2018-01-01T00:00:00.000+00:00").ToUniversalTime();
             User = new User("admin", "admin", UserRole.Admin);
             PreviousHash = _algorithm.GetHash("79098738-8772-4F0A-998D-9EC7737720F4");
             Data = User.GetData();
