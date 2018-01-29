@@ -177,10 +177,11 @@ namespace Blockchain
         {
             var data = "";
             data += Version;
-            data += CreatedOn.ToString("yyyy-MM-dd HH:mm:ss.ffK");
+            data += CreatedOn.Ticks;
             data += PreviousHash;
             data += Data.Hash;
-            data += User;
+            data += User.Hash;
+
             return data;
         }
 

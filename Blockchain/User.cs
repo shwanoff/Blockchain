@@ -143,7 +143,7 @@ namespace Blockchain
         public static User GetCurrentUser()
         {
             // TODO: Исправить получение текущего пользователя.
-            return new User("admin", "password", UserRole.Admin);
+            return new User("admin", "admin", UserRole.Admin);
         }
 
         /// <summary>
@@ -153,8 +153,7 @@ namespace Blockchain
         public string GetStringForHash()
         {
             var text = Login;
-            text += Password;
-            text += Role;
+            text += (int)Role;
 
             return text;
         }

@@ -94,6 +94,7 @@ namespace BlockchainService
         {
             try
             {
+
                 var blocks = Instance.Get().Chain.BlockChain;
                 var result = new List<BlockService>();
                 foreach (var block in blocks)

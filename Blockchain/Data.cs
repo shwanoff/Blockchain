@@ -89,7 +89,7 @@ namespace Blockchain
         public string GetStringForHash()
         {
             var text = Content;
-            text += Type;
+            text += (int)Type;
             return text;
         }
 
