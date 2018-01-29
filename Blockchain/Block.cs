@@ -1,6 +1,7 @@
 ﻿using Blockchain.Algorithms;
 using System;
 using Blockchain.Exceptions;
+using System.Runtime.Serialization;
 
 namespace Blockchain
 {
@@ -176,7 +177,7 @@ namespace Blockchain
         {
             var data = "";
             data += Version;
-            data += CreatedOn;
+            data += CreatedOn.ToString("yyyy-MM-dd HH:mm:ss.ffK");
             data += PreviousHash;
             data += Data.Hash;
             data += User;
@@ -190,6 +191,19 @@ namespace Blockchain
         public override string ToString()
         {
             return Hash;
+        }
+
+        public static Block Deserialize(string json)
+        {
+            var data = Helpers.Deserialize(typeof(Block), json);
+
+            if (!data.IsCorrect())
+            {
+                throw new MethodResultException(nameof(data), "Некорректные данные после десериализации.");
+            }
+
+            return data as Block ??
+                throw new FormatException("Не удалось выполнить десериализацию данных.");
         }
     }
 }

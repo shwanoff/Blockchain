@@ -37,5 +37,11 @@ namespace Blockchain.Tests
 
             Assert.IsTrue(chain.CheckCorrect());
         }
+
+        [TestMethod()]
+        public void GetBlocksFromHostsTest()
+        {
+            Chain.GetBlocksFromHosts("http://blockchain-dev-as.azurewebsites.net/", "getchain", "");
+        }
     }
 }

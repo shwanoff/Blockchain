@@ -8,7 +8,7 @@ namespace BlockchainService
 {
     public abstract class ServiceBase
     {
-        protected Block AddData(string text)
+        protected BlockService AddData(string text)
         {
             try
             {
@@ -22,7 +22,7 @@ namespace BlockchainService
                 // TODO: Добавить сообщение об ошибке в сохранение в лог.
             }
         }
-        protected Block AddUser(string login, string password, string role, string code)
+        protected BlockService AddUser(string login, string password, string role, string code)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace BlockchainService
             }
         }
 
-        protected Block AddHost(string ip)
+        protected BlockService AddHost(string ip)
         {
             try
             {
@@ -90,12 +90,12 @@ namespace BlockchainService
             }
         }
 
-        protected List<Block> GetBlocks()
+        protected List<BlockService> GetBlocks()
         {
             try
             {
                 var blocks = Instance.Get().Chain.BlockChain;
-                var result = new List<Block>();
+                var result = new List<BlockService>();
                 foreach (var block in blocks)
                 {
                     var b = ConvertBlock(block);
@@ -113,18 +113,18 @@ namespace BlockchainService
 
 
 
-        private Block ConvertBlock(Blockchain.Block block)
+        private BlockService ConvertBlock(Block block)
         {
             //TODO: Добавить проверку.
 
-            var b = new Block()
+            var b = new BlockService()
             {
                 Version = block.Version,
                 CreatedOn = block.CreatedOn,
                 Hash = block.Hash,
                 PreviousHash = block.PreviousHash,
-                Data = block.Data.Content,
-                User = block.User.Login
+                Data = block.Data.GetJson(),
+                User = block.User.GetJson()
             };
             return b;
         }

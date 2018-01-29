@@ -7,17 +7,17 @@ namespace BlockchainService
 {
     public class BlockchainService : ServiceBase, IBlockchainService
     {
-        public async Task<Block> AddDataAsync(string text)
+        public async Task<BlockService> AddDataAsync(string text)
         {
             return await Task.Run(() => AddData(text));
         }
 
-        public async Task<Block> AddUserAsync(string login, string password, string role, string code)
+        public async Task<BlockService> AddUserAsync(string login, string password, string role, string code)
         {
             return await Task.Run(() => AddUser(login, password, role, code));
         }
 
-        public async Task<Block> AddHostAsync(string ip)
+        public async Task<BlockService> AddHostAsync(string ip)
         {
             return await Task.Run(() => AddHost(ip));
         }
@@ -31,7 +31,7 @@ namespace BlockchainService
 
         
 
-        public async Task<List<Block>> GetChainAsync()
+        public async Task<List<BlockService>> GetChainAsync()
         {
             return await Task.Run(() => GetBlocks());
         }

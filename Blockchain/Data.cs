@@ -72,6 +72,11 @@ namespace Blockchain
         public static Data Deserialize(string json)
         {
             var data =  Helpers.Deserialize(typeof(Data), json);
+
+            if(!data.IsCorrect())
+            {
+                throw new MethodResultException(nameof(data), "Некорректные данные после десериализации.");
+            }
             
             return data as Data ?? 
                 throw new FormatException("Не удалось выполнить десериализацию данных.");

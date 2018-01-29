@@ -7,7 +7,7 @@ namespace BlockchainService
     /// Блок данных.
     /// </summary>
     [DataContract]
-    public class Block
+    public class BlockService
     {
         /// <summary>
         /// Версия спецификации блока.

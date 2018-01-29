@@ -1,5 +1,7 @@
 ﻿using Blockchain.Algorithms;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
@@ -54,21 +56,6 @@ namespace Blockchain
         }
 
         /// <summary>
-        /// Проверить псевдоуникальный 128-битный идентификатор на корректность.
-        /// </summary>
-        /// <param name="guid"> Проверяемый идентификатор. </param>
-        /// <returns> Корректность идентификатора. true - идентификатор корректен, false - идентификатор не корректен. </returns>
-        public static bool IsCorrect(this Guid guid)
-        {
-            if(guid == null || guid == Guid.Empty)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
         /// Получение данных в формате JSON из хешируемого компонента.
         /// </summary>
         /// <param name="component"> Хешируемый компонент. </param>
@@ -93,6 +80,8 @@ namespace Blockchain
         /// <returns> Десериализованный хешируемый компонент. </returns>
         public static IHashable Deserialize(Type type, string json)
         {
+            // TODO: Добавить проверку type, что он реализует IHashable.
+
             var jsonFormatter = new DataContractJsonSerializer(type);
 
             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))

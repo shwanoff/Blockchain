@@ -5,6 +5,12 @@ using System.Linq;
 using Blockchain.Exceptions;
 using BlockchainData;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
+using System.Runtime.Serialization.Json;
+using System.IO;
+using System.Text;
+using System.Runtime.Serialization;
 
 namespace Blockchain
 {
@@ -74,14 +80,14 @@ namespace Blockchain
         public Chain()
         {
             var globalChain = GetGlobalChein();
-            if(globalChain == null)
+            if (globalChain == null)
             {
                 CreateNewBlockChain();
             }
             else
             {
                 bool globalChainIsCorrect = globalChain.CheckCorrect();
-                if(globalChainIsCorrect)
+                if (globalChainIsCorrect)
                 {
                     _blockChain = globalChain._blockChain;
                     _algorithm = globalChain._algorithm;
@@ -97,7 +103,7 @@ namespace Blockchain
                 }
             }
 
-            if(!CheckCorrect())
+            if (!CheckCorrect())
             {
                 throw new MethodResultException(nameof(Chain), "Ошибка создания цепочки блоков. Цепочка некорректна.");
             }
@@ -109,12 +115,12 @@ namespace Blockchain
         /// <param name="blocks"> Блоки провайдера данных. </param>
         private Chain(List<BlockchainData.Block> blocks)
         {
-            if(blocks == null)
+            if (blocks == null)
             {
                 throw new MethodRequiresException(nameof(blocks), "Список блоков провайдера данных не может быть равным null.");
             }
 
-            foreach(var block in blocks)
+            foreach (var block in blocks)
             {
                 var b = new Block(block);
                 _blockChain.Add(b);
@@ -145,9 +151,9 @@ namespace Blockchain
         /// <returns> Корректность цепочки блоков. true - цепочка блоков корректна, false - цепочка некорректна. </returns>
         public bool CheckCorrect()
         {
-            foreach(var block in _blockChain)
+            foreach (var block in _blockChain)
             {
-                if(!block.IsCorrect(_algorithm))
+                if (!block.IsCorrect(_algorithm))
                 {
                     return false;
                 }
@@ -179,7 +185,7 @@ namespace Blockchain
         /// <param name="text"> Добавляемые данные. </param>
         public Block AddContent(string text)
         {
-            if(string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text))
             {
                 throw new MethodRequiresException(nameof(text), "Текст не должен быть пустым или равен null.");
             }
@@ -211,7 +217,7 @@ namespace Blockchain
                 throw new MethodRequiresException(nameof(password), "Пароль не может быть пустым или равным null.");
             }
 
-            if(Users.Any(b => b.Login == login))
+            if (Users.Any(b => b.Login == login))
             {
                 return null;
             }
@@ -255,13 +261,13 @@ namespace Blockchain
             }
 
             var user = Users.SingleOrDefault(b => b.Login == login);
-            if(user == null)
+            if (user == null)
             {
                 return null;
             }
 
             var passwordHash = password.GetHash();
-            if(user.Password != passwordHash)
+            if (user.Password != passwordHash)
             {
                 return null;
             }
@@ -275,7 +281,7 @@ namespace Blockchain
         /// <param name="block"> Добавляемый блок. </param>
         private void AddBlock(Block block)
         {
-            if(!block.IsCorrect())
+            if (!block.IsCorrect())
             {
                 throw new MethodRequiresException(nameof(block), "Блок не корректный.");
             }
@@ -285,7 +291,7 @@ namespace Blockchain
             _dataProvider.AddBlock(block.Version, block.CreatedOn, block.Hash, block.PreviousHash, block.Data.GetJson(), block.User.GetJson());
             AddDataInList(block);
 
-            if(!CheckCorrect())
+            if (!CheckCorrect())
             {
                 throw new MethodResultException(nameof(Chain), "Была нарушена корректность после добавления блока.");
             }
@@ -301,7 +307,7 @@ namespace Blockchain
             {
                 case DataType.Content:
                     _data.Add(block.Data);
-                    foreach(var host in _nodes)
+                    foreach (var host in _nodes)
                     {
                         SendBlockToHosts(host, "AddData", block.Data.Content);
                     }
@@ -326,7 +332,46 @@ namespace Blockchain
             }
         }
 
-        private async void SendBlockToHosts(string ip, string method, string data)
+        public static void GetBlocksFromHosts(string ip, string method, string data)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // http://localhost:28451/BlockchainService.svc/api/getchain/
+                string repUri = $"{ip}/BlockchainService.svc/api/{method}/{data}";
+                var response = client.GetAsync(repUri).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var dd = response.Content.ReadAsStringAsync().Result;
+                    var blocks = DeserializeCollection(dd);
+                }
+            }
+        }
+
+        public static List<Block> DeserializeCollection(string json)
+        {
+
+            var jsonFormatter2 = new DataContractJsonSerializer(typeof(GetChainResultRoot));
+
+            using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
+            {
+                var deserializer = new DataContractJsonSerializer(typeof(GetChainResultRoot));
+                var requestResult = (GetChainResultRoot)deserializer.ReadObject(ms);
+
+                var result = new List<Block>();
+                foreach (var block in requestResult.GetChainResult)
+                {
+                    result.Add(new Block(block));
+                }
+
+                return result;
+            }
+        }
+
+        private  void SendBlockToHosts(string ip, string method, string data)
         {
             using (var client = new HttpClient())
             {

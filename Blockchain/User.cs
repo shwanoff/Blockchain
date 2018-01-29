@@ -184,6 +184,11 @@ namespace Blockchain
 
             var user = Helpers.Deserialize(typeof(User), json);
 
+            if(!user.IsCorrect())
+            {
+                throw new MethodResultException(nameof(user), "Некоректный пользователь после десериализации.");
+            }
+
             return user as User ??
                 throw new FormatException("Не удалось выполнить пользователя данных.");
         }
