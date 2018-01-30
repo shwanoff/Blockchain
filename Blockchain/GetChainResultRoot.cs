@@ -9,6 +9,9 @@ namespace Blockchain
     [DataContract]
     public class GetChainResultRoot
     {
+        /// <summary>
+        /// Список блоков.
+        /// </summary>
         [DataMember]
         public List<BlockchainData.Block> GetChainResult { get; set; }
     }

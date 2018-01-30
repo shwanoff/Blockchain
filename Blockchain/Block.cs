@@ -1,7 +1,6 @@
 ﻿using Blockchain.Algorithms;
 using System;
 using Blockchain.Exceptions;
-using System.Runtime.Serialization;
 
 namespace Blockchain
 {
@@ -91,7 +90,7 @@ namespace Blockchain
                 _algorithm = algorithm;
             }
 
-            Version = 1;
+            Version = 1; // TODO: Вынести в конфиг файл.
             CreatedOn = DateTime.Now.ToUniversalTime();
             PreviousHash = previousBlock.Hash;
             Data = data;
@@ -116,7 +115,7 @@ namespace Blockchain
                 _algorithm = algorithm;
             }
 
-            Version = 1;
+            Version = 1; // TODO: Вынести в конфиг файл.
             CreatedOn = DateTime.Parse("2018-01-01T00:00:00.000+00:00").ToUniversalTime();
             User = new User("admin", "admin", UserRole.Admin);
             PreviousHash = _algorithm.GetHash("79098738-8772-4F0A-998D-9EC7737720F4");
@@ -192,19 +191,6 @@ namespace Blockchain
         public override string ToString()
         {
             return Hash;
-        }
-
-        public static Block Deserialize(string json)
-        {
-            var data = Helpers.Deserialize(typeof(Block), json);
-
-            if (!data.IsCorrect())
-            {
-                throw new MethodResultException(nameof(data), "Некорректные данные после десериализации.");
-            }
-
-            return data as Block ??
-                throw new FormatException("Не удалось выполнить десериализацию данных.");
         }
     }
 }

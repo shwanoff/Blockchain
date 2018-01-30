@@ -37,7 +37,7 @@ namespace Blockchain.Algorithms.Tests
         public void GetHashTest1()
         {
             // Arrange.
-            var originalHash = "0b34382664352b20f64bd8354b798823d888b5a96ca963beb44e1d4c460daf77";
+            var originalHash = "7efa400e1055240d9b3cba68369402bed5ed1059bdf50d4776cf3a155ee262a9";
             var component = new Data(_text, DataType.Content, _algorithm);
 
             // Act.

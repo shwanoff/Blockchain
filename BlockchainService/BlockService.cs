@@ -16,12 +16,6 @@ namespace BlockchainService
         public int Version { get; set; }
 
         /// <summary>
-        /// Псевдоуникальный 128-битный идентификатор.
-        /// </summary>
-        [DataMember]
-        public string Code { get; set; }
-
-        /// <summary>
         /// Момент создания блока.
         /// </summary>
         [DataMember]
@@ -57,7 +51,7 @@ namespace BlockchainService
         /// <returns> Уникальный код. </returns>
         public override string ToString()
         {
-            return Code;
+            return Data;
         }
     }
 }

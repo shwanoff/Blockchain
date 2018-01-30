@@ -11,7 +11,6 @@ namespace Blockchain.Tests
     public class DataTests
     {
         private string _text = "https://shwanoff.ru";
-        private IAlgorithm _algorithm = AlgorithmHelper.GetDefaultAlgorithm();
 
         /// <summary>
         /// Создание нового блока.
@@ -20,15 +19,13 @@ namespace Blockchain.Tests
         public void DataTest()
         {
             // Arrange.
-            var originalHash = "0b34382664352b20f64bd8354b798823d888b5a96ca963beb44e1d4c460daf77";
+            var originalHash = "7efa400e1055240d9b3cba68369402bed5ed1059bdf50d4776cf3a155ee262a9";
 
             // Act.
-            var data = new Data(_text, DataType.Content, _algorithm);
-            var data2 = new Data(_text, DataType.Content);
+            var data = new Data(_text, DataType.Content);
 
             // Assert.
             Assert.AreEqual(originalHash, data.Hash);
-            Assert.AreEqual(originalHash, data2.Hash);
         }
     }
 }

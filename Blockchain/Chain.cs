@@ -6,11 +6,9 @@ using Blockchain.Exceptions;
 using BlockchainData;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Newtonsoft.Json;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Text;
-using System.Runtime.Serialization;
 
 namespace Blockchain
 {
@@ -37,7 +35,7 @@ namespace Blockchain
         /// <summary>
         /// Список IP адресов хостов.
         /// </summary>
-        private List<string> _nodes = new List<string>();
+        private List<string> _hosts = new List<string>();
 
         /// <summary>
         /// Список пользователей.
@@ -72,40 +70,88 @@ namespace Blockchain
         /// <summary>
         /// IP адреса серверов.
         /// </summary>
-        public IEnumerable<string> Nodes => _nodes;
+        public IEnumerable<string> Hosts => _hosts;
+
+        public int Length => _blockChain.Count;
 
         /// <summary>
         /// Создать новый экземпляр цепочки блоков.
         /// </summary>
         public Chain()
         {
+            // Получаем цепочки блоков.
             var globalChain = GetGlobalChein();
-            if (globalChain == null)
+            var localChain = GetLocalChain();
+
+            // Создаем новую, если ни одной цепочки не найдено.
+            if (globalChain == null && localChain == null)
             {
                 CreateNewBlockChain();
             }
             else
             {
-                bool globalChainIsCorrect = globalChain.CheckCorrect();
-                if (globalChainIsCorrect)
+                // Если глобальная цепочка больше, синхронизируемся с ней. Иначе с локальной, если они совпадают.
+                if(globalChain?.Length > localChain?.Length)
                 {
-                    _blockChain = globalChain._blockChain;
-                    _algorithm = globalChain._algorithm;
-                    _dataProvider = globalChain._dataProvider;
-                    _nodes = globalChain._nodes;
-                    _data = globalChain._data;
-                    _users = globalChain._users;
+                    ReplaceLocalChainFromGlobalChain(globalChain);
                 }
                 else
                 {
-                    CreateNewBlockChain();
-                    throw new TypeLoadException("Полученная глобальная цепочка блоков является некорректной!");
+                    // Для проверки совпадения цепочек, достаточно проверить хеши крайних блоков.
+                    // Если не совпадают, выбираем глобальную цепочку. Иначе загружаем локальную.
+                    if(globalChain?.PreviousBlock?.Hash != localChain?.PreviousBlock?.Hash)
+                    {
+                        ReplaceLocalChainFromGlobalChain(globalChain);
+                    }
+                    else
+                    {
+                        LoadDataFromLocalChain(localChain);
+                    }
                 }
             }
 
             if (!CheckCorrect())
             {
                 throw new MethodResultException(nameof(Chain), "Ошибка создания цепочки блоков. Цепочка некорректна.");
+            }
+        }
+
+        /// <summary>
+        /// Получить данные из локальной цепочки.
+        /// </summary>
+        /// <param name="localChain"> Локальная цепочка блоков. </param>
+        private void LoadDataFromLocalChain(Chain localChain)
+        {
+            if(localChain == null)
+            {
+                throw new MethodRequiresException(nameof(localChain), "Локальная цепочка блоков не может быть равна null.");
+            }
+
+            foreach(var block in localChain._blockChain)
+            {
+                _blockChain.Add(block);
+                AddDataInList(block);
+                SendBlockToGlobalChain(block);
+            }
+        }
+
+        /// <summary>
+        /// Заменить локальную цепочку данных блоками из глобальной цепочки.
+        /// </summary>
+        /// <param name="globalChain"> Глобавльная цепочка данных. </param>
+        private void ReplaceLocalChainFromGlobalChain(Chain globalChain)
+        {
+            if(globalChain == null)
+            {
+                throw new MethodRequiresException(nameof(globalChain), "Глобальная цепочка блоков не может быть равна null.");
+            }
+
+            // TODO: Очень топорная синхронизация (полная замена). Необходимо разработать алгоритм слияния.
+            _dataProvider.Crear();
+
+            foreach (var block in globalChain._blockChain)
+            {
+                AddBlock(block);
             }
         }
 
@@ -126,6 +172,30 @@ namespace Blockchain
                 _blockChain.Add(b);
 
                 AddDataInList(b);
+            }
+
+            if (!CheckCorrect())
+            {
+                throw new MethodResultException(nameof(Chain), "Ошибка создания цепочки блоков. Цепочка некорректна.");
+            }
+        }
+
+        /// <summary>
+        /// Создание цепочки блоков из блоков данных.
+        /// </summary>
+        /// <param name="blocks"> Список блоков данных. </param>
+        private Chain(List<Block> blocks)
+        {
+            if (blocks == null)
+            {
+                throw new MethodRequiresException(nameof(blocks), "Список блоков не может быть равным null.");
+            }
+
+            foreach (var block in blocks)
+            {
+                _blockChain.Add(block);
+
+                AddDataInList(block);
             }
 
             if (!CheckCorrect())
@@ -168,7 +238,28 @@ namespace Blockchain
         /// <returns> Цепочка блоков. </returns>
         private Chain GetGlobalChein()
         {
-            // TODO: Реализовать получение хоста из конфигурационных файлов.
+            _hosts.Add("http://blockchain-dev-as.azurewebsites.net"); // TODO: Сделай получение из конфиг файла.
+
+            foreach (var host in Hosts)
+            {
+                // TODO: Здесь нужно будет переделать. Предварительно выбирается хост с самой большой цепочкой блоков и уже он синхранизуется.
+                var blocks = GetBlocksFromHosts(host);
+                if (blocks.Count > 0)
+                {
+                    var chain = new Chain(blocks);
+                    return chain;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Получение цепочки блоков из локального хранилища.
+        /// </summary>
+        /// <returns></returns>
+        private Chain GetLocalChain()
+        {
             var blocks = _dataProvider.GetBlocks();
             if (blocks.Count > 0)
             {
@@ -191,7 +282,6 @@ namespace Blockchain
             }
 
             var data = new Data(text, DataType.Content);
-
             var block = new Block(PreviousBlock, data, User.GetCurrentUser(), _algorithm);
 
             AddBlock(block);
@@ -205,7 +295,7 @@ namespace Blockchain
         /// <param name="login"> Имя пользователя. </param>
         /// <param name="password"> Пароль пользователя. </param>
         /// <param name="role"> Права доступа пользователя. </param>
-        public Block AddUser(string login, string password, UserRole role = UserRole.Reader, Guid? code = null)
+        public Block AddUser(string login, string password, UserRole role = UserRole.Reader)
         {
             if (string.IsNullOrEmpty(login))
             {
@@ -222,13 +312,18 @@ namespace Blockchain
                 return null;
             }
 
-            var user = new User(login, password, role, code: code);
+            var user = new User(login, password, role);
             var data = user.GetData();
             var block = new Block(PreviousBlock, data, User.GetCurrentUser());
             AddBlock(block);
             return block;
         }
 
+        /// <summary>
+        /// Добавление сведений об адресе глобальной цепочки.
+        /// </summary>
+        /// <param name="ip"> Адрес хоста в сети. </param>
+        /// <returns> Блок данных с адресом хоста. </returns>
         public Block AddHost(string ip)
         {
             if (string.IsNullOrEmpty(ip))
@@ -238,16 +333,19 @@ namespace Blockchain
 
             // TODO: Добавить проверку формата ip адреса
 
-
             var data = new Data(ip, DataType.Node);
-
             var block = new Block(PreviousBlock, data, User.GetCurrentUser(), _algorithm);
-
             AddBlock(block);
 
             return block;
         }
 
+        /// <summary>
+        /// Авторизоваться пользователем сети.
+        /// </summary>
+        /// <param name="login"> Логин. </param>
+        /// <param name="password"> Пароль. </param>
+        /// <returns> Пользователь сети. null если не удалось авторизоваться. </returns>
         public User LoginUser(string login, string password)
         {
             if (string.IsNullOrEmpty(login))
@@ -286,10 +384,17 @@ namespace Blockchain
                 throw new MethodRequiresException(nameof(block), "Блок не корректный.");
             }
 
+            // Не добавляем уже существующий блок.
+            if(_blockChain.Any(b => b.Hash == block.Hash))
+            {
+                return;
+            }
+
             // TODO: Реализовать транзакцию.
             _blockChain.Add(block);
             _dataProvider.AddBlock(block.Version, block.CreatedOn, block.Hash, block.PreviousHash, block.Data.GetJson(), block.User.GetJson());
             AddDataInList(block);
+            SendBlockToGlobalChain(block);
 
             if (!CheckCorrect())
             {
@@ -307,7 +412,7 @@ namespace Blockchain
             {
                 case DataType.Content:
                     _data.Add(block.Data);
-                    foreach (var host in _nodes)
+                    foreach (var host in _hosts)
                     {
                         SendBlockToHosts(host, "AddData", block.Data.Content);
                     }
@@ -315,14 +420,14 @@ namespace Blockchain
                 case DataType.User:
                     var user = new User(block);
                     _users.Add(user);
-                    foreach (var host in _nodes)
+                    foreach (var host in _hosts)
                     {
                         SendBlockToHosts(host, "AddUser", $"{user.Login}&{user.Password}&{user.Role}");
                     }
                     break;
                 case DataType.Node:
-                    _nodes.Add(block.Data.Content);
-                    foreach (var host in _nodes)
+                    _hosts.Add(block.Data.Content);
+                    foreach (var host in _hosts)
                     {
                         SendBlockToHosts(host, "AddHost", block.Data.Content);
                     }
@@ -332,28 +437,87 @@ namespace Blockchain
             }
         }
 
-        public static void GetBlocksFromHosts(string ip, string method, string data)
+        /// <summary>
+        /// Добавление данных из блоков в списки быстрого доступа.
+        /// </summary>
+        /// <param name="block"> Блок. </param>
+        private void SendBlockToGlobalChain(Block block)
+        {
+            switch (block.Data.Type)
+            {
+                case DataType.Content:
+                    foreach (var host in _hosts)
+                    {
+                        SendBlockToHosts(host, "AddData", block.Data.Content);
+                    }
+                    break;
+                case DataType.User:
+                    var user = new User(block);
+                    foreach (var host in _hosts)
+                    {
+                        // TODO: Исправить. Получаем хеш пароля а не пароль. некорректно.
+                        SendBlockToHosts(host, "AddUser", $"{user.Login}&{user.Password}&{user.Role}");
+                    }
+                    break;
+                case DataType.Node:
+                    _hosts.Add(block.Data.Content);
+                    foreach (var host in _hosts)
+                    {
+                        SendBlockToHosts(host, "AddHost", block.Data.Content);
+                    }
+                    break;
+                default:
+                    throw new MethodRequiresException(nameof(block), "Неизвестный тип блока.");
+            }
+        }
+
+        /// <summary>
+        /// Получение всех блоков от хоста через api.
+        /// </summary>
+        /// <param name="ip"> Адрес хоста в сети. </param>
+        /// <returns> Список блоков. </returns>
+        private static List<Block> GetBlocksFromHosts(string ip)
+        {
+            // http://localhost:28451/BlockchainService.svc/api/getchain/ пример запроса.
+            var response = SendRequest(ip, "getchain", "");
+            var blocks = DeserializeCollectionBlocks(response);
+            return blocks;
+        }
+
+        /// <summary>
+        /// Отправка запроса к api хоста.
+        /// </summary>
+        /// <param name="ip"> Адрес хоста сети. </param>
+        /// <param name="method"> Метод вызываемый у хоста. </param>
+        /// <param name="data"> Передаваемые параметры метода через &. </param>
+        /// <returns> Json ответ хоста. </returns>
+        private static string SendRequest(string ip, string method, string data)
         {
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                // http://localhost:28451/BlockchainService.svc/api/getchain/
+                // http://localhost:28451/BlockchainService.svc/api/getchain/ пример запроса.
                 string repUri = $"{ip}/BlockchainService.svc/api/{method}/{data}";
                 var response = client.GetAsync(repUri).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    var dd = response.Content.ReadAsStringAsync().Result;
-                    var blocks = DeserializeCollection(dd);
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    return result;
                 }
             }
+
+            return null;
         }
 
-        public static List<Block> DeserializeCollection(string json)
+        /// <summary>
+        /// Формирование списка блоков на основе полученого json ответа хоста.
+        /// </summary>
+        /// <param name="json"> Json ответ хоста на запрос получения всех блоков. </param>
+        /// <returns> Список блоков глобальной цепочки. </returns>
+        private static List<Block> DeserializeCollectionBlocks(string json)
         {
-
             var jsonFormatter2 = new DataContractJsonSerializer(typeof(GetChainResultRoot));
 
             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
@@ -371,13 +535,18 @@ namespace Blockchain
             }
         }
 
-        private  void SendBlockToHosts(string ip, string method, string data)
+        /// <summary>
+        /// Запрос к api хоста на добавление блока данных.
+        /// </summary>
+        /// <param name="ip"> Адрес хоста в сети. </param>
+        /// <param name="method"> Вызываемый метод хоста. </param>
+        /// <param name="data"> Параметры метода хоста через &.</param>
+        /// <returns> Успешность выполнения запроса. </returns>
+        private bool SendBlockToHosts(string ip, string method, string data)
         {
-            using (var client = new HttpClient())
-            {
-                // http://localhost:28451/BlockchainService.svc/api/getchain/
-                string repUri = $"{ip}/BlockchainService.svc/api/{method}/{data}/";
-            }
+            var result = SendRequest(ip, method, data);
+            var success = !string.IsNullOrEmpty(result);
+            return success;
         }
     }
 }

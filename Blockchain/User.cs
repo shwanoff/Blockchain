@@ -58,7 +58,7 @@ namespace Blockchain
         /// <param name="password"> Пароль пользователя. </param>
         /// <param name="role"> Права пользователя. </param>
         /// <param name="algorithm"> Алгоритм хеширования. </param>
-        public User(string login, string password, UserRole role, IAlgorithm algorithm = null, Guid? code = null)
+        public User(string login, string password, UserRole role, IAlgorithm algorithm = null)
         {
             // Проверяем предусловия.
             if(string.IsNullOrEmpty(login))

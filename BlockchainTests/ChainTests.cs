@@ -27,21 +27,18 @@ namespace Blockchain.Tests
         [TestMethod()]
         public void AddContentTest()
         {
-            var text = "https://shwanoff.ru/";
+            // Arrange.
+            var text = "Hello world";
             var chain = new Chain();
             var login = "user";
             var password = "user";
 
+            // Act.
             chain.AddContent(text);
             chain.AddUser(login, password);
 
+            // Assert.
             Assert.IsTrue(chain.CheckCorrect());
-        }
-
-        [TestMethod()]
-        public void GetBlocksFromHostsTest()
-        {
-            Chain.GetBlocksFromHosts("http://blockchain-dev-as.azurewebsites.net/", "getchain", "");
         }
     }
 }

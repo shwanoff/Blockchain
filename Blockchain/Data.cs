@@ -101,15 +101,5 @@ namespace Blockchain
         {
             return Content;
         }
-
-        /// <summary>
-        /// Получить данные в формате JSON.
-        /// </summary>
-        /// <returns> Строка с данными в формате JSON. </returns>
-        public string Json()
-        {
-            var jsonString = this.GetJson();
-            return jsonString;
-        }
     }
 }

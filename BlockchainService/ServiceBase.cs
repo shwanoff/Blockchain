@@ -1,13 +1,19 @@
 ﻿using Blockchain;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace BlockchainService
 {
+    /// <summary>
+    /// Базовый класс для реализации контракта службы.
+    /// </summary>
     public abstract class ServiceBase
     {
+        /// <summary>
+        /// Добавление данных.
+        /// </summary>
+        /// <param name="text"> Содержимое данных. </param>
+        /// <returns> Добавленных блок. </returns>
         protected BlockService AddData(string text)
         {
             try
@@ -22,7 +28,15 @@ namespace BlockchainService
                 // TODO: Добавить сообщение об ошибке в сохранение в лог.
             }
         }
-        protected BlockService AddUser(string login, string password, string role, string code)
+
+        /// <summary>
+        /// Добавление пользователя. 
+        /// </summary>
+        /// <param name="login"> Логин. </param>
+        /// <param name="password"> Пароль. </param>
+        /// <param name="role"> Права доступа. </param>
+        /// <returns> Добавленных блок с данными о пользователе. </returns>
+        protected BlockService AddUser(string login, string password, string role)
         {
             try
             {
@@ -32,12 +46,9 @@ namespace BlockchainService
                     {
                         var r = (UserRole)parseRole;
 
-                        if(Guid.TryParse(code, out Guid guid))
-                        {
-                            var block = Instance.Get().Chain.AddUser(login, password, r, guid);
-                            var b = ConvertBlock(block);
-                            return b;
-                        }
+                        var block = Instance.Get().Chain.AddUser(login, password, r);
+                        var b = ConvertBlock(block);
+                        return b;
                     }
                 }
 
@@ -50,6 +61,11 @@ namespace BlockchainService
             }
         }
 
+        /// <summary>
+        /// Добавление хоста.
+        /// </summary>
+        /// <param name="ip"> Адрес хоста в сети. </param>
+        /// <returns> Добавленных блок с данными о хосте. </returns>
         protected BlockService AddHost(string ip)
         {
             try
@@ -65,8 +81,12 @@ namespace BlockchainService
             }
         }
 
-
-
+        /// <summary>
+        /// Авторизация пользователя.
+        /// </summary>
+        /// <param name="login"> Логин. </param>
+        /// <param name="password"> Пароль. </param>
+        /// <returns> Авторизованный пользователь системы. </returns>
         protected User Login(string login, string password)
         {
             try
@@ -90,6 +110,10 @@ namespace BlockchainService
             }
         }
 
+        /// <summary>
+        /// Получение всех блоков цепочки.
+        /// </summary>
+        /// <returns> Список блоков цепочки блоков. </returns>
         protected List<BlockService> GetBlocks()
         {
             try
@@ -111,12 +135,23 @@ namespace BlockchainService
                 // TODO: Добавить сообщение об ошибке в сохранение в лог.
             }
         }
-
-
-
+        
+        /// <summary>
+        /// Преобразование блока цепочки блоков в блок службы.
+        /// </summary>
+        /// <param name="block"> Блок цепочки блоков. </param>
+        /// <returns> Блок службы. </returns>
         private BlockService ConvertBlock(Block block)
         {
-            //TODO: Добавить проверку.
+            if(block == null)
+            {
+                throw new ArgumentNullException(nameof(block), "Блок цепочки блоков не может быть равен null");
+            }
+
+            if(!block.IsCorrect())
+            {
+                throw new ArgumentException("Некорректный блок цепочки блоков.", nameof(block));
+            }
 
             var b = new BlockService()
             {
@@ -127,6 +162,7 @@ namespace BlockchainService
                 Data = block.Data.GetJson(),
                 User = block.User.GetJson()
             };
+
             return b;
         }
     }
