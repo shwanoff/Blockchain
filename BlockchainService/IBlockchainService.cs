@@ -31,7 +31,7 @@ namespace BlockchainService
         /// <returns> Добавленных блок с данными о пользователе. </returns>
         // TODO: Огромная дыра, нешифрованый пароль в get. Исправить.
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "/AddUserAsync/{login}&{password}&{role}", BodyStyle = WebMessageBodyStyle.Wrapped, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "GET", UriTemplate = "/AddUser/{login}&{password}&{role}", BodyStyle = WebMessageBodyStyle.Wrapped, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         Task<BlockService> AddUserAsync(string login, string password, string role);
 
         /// <summary>

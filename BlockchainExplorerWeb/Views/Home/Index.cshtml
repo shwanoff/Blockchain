@@ -1,0 +1,29 @@
+﻿<div class="jumbotron">
+    <h1>Blockchain Explorer Web</h1>
+    <p class="lead">Обозреватель глобального хранилища блоков. Позволяет просматривать блоки службы и добавлять новые данные.</p>
+    <p>@Html.ActionLink("Подробнее", "About", "Home", routeValues: null, htmlAttributes: new { @class = "btn btn-primary btn-lg" })</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Обозреватель блоков</h2>
+        <p>
+            Просмотр всех данных хранимых в цепочке блоков в глобальном хранилище.
+        </p>
+        <p>@Html.ActionLink("Просмотр", "Explore", "Home", routeValues: null, htmlAttributes: new { @class = "btn btn-primary" } )</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Добавить данные</h2>
+        <p>
+            Добавление данных в цепочку блоков глобального хранилища.
+        </p>
+        <p>@Html.ActionLink("Добавить", "Add", "Home", routeValues: null, htmlAttributes: new { @class = "btn btn-primary" })</p>
+    </div>
+    <div class="col-md-4">
+        <h2>О программе</h2>
+        <p>
+            Получить более подробную информацию о программе.
+        </p>
+        <p>@Html.ActionLink("Справка", "About", "Home", routeValues: null, htmlAttributes: new { @class = "btn btn-primary" })</p>
+    </div>
+</div>

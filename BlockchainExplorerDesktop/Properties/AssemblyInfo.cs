@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Норбит")]
 [assembly: AssemblyProduct("Blockchain Explorer Desktop")]
 [assembly: AssemblyCopyright("Copyright Norbit ©  2018")]
-[assembly: AssemblyTrademark("shwanoff")]
+[assembly: AssemblyTrademark("Шванов Вадим")]
 [assembly: AssemblyCulture("")]
 
 // Установка значения False для параметра ComVisible делает типы в этой сборке невидимыми
