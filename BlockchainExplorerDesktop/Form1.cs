@@ -35,9 +35,8 @@ namespace BlockchainExplorerDesktop
         private void listBox1_DoubleClick(object sender, EventArgs e)
         {
 
-            if (listBox1.SelectedItem is Block item)
+            if (listBox1.SelectedItem is BlockService item)
             {
-                textBox2.Text = item.Code;
                 textBox3.Text = item.CreatedOn.ToLocalTime().ToString();
                 textBox4.Text = item.Hash;
                 textBox5.Text = item.PreviousHash;

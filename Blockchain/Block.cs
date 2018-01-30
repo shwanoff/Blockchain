@@ -140,7 +140,7 @@ namespace Blockchain
             }
 
             Version = block.Version;
-            CreatedOn = block.CreatedOn;
+            CreatedOn = block.CreatedOn.ToUniversalTime();
             User = User.Deserialize(block.User);
             PreviousHash = block.PreviousHash;
             Data = Data.Deserialize(block.Data);

@@ -21,6 +21,7 @@ namespace BlockchainData
         /// Момент создания блока.
         /// </summary>
         [DataMember]
+        [DateTimeKind(DateTimeKind.Utc)]
         public DateTime CreatedOn { get; set; }
 
         /// <summary>

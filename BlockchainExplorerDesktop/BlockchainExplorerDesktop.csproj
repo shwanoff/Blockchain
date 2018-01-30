@@ -72,7 +72,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="Connected Services\BlockchainService\BlockchainExplorerDesktop.BlockchainService.Block.datasource">
+    <None Include="Connected Services\BlockchainService\BlockchainExplorerDesktop.BlockchainService.BlockService.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Connected Services\BlockchainService\BlockchainExplorerDesktop.BlockchainService.User.datasource">

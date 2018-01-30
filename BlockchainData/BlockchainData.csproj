@@ -51,6 +51,7 @@
     <Compile Include="Block.cs" />
     <Compile Include="BlockSqlContext.cs" />
     <Compile Include="DataProviderHelper.cs" />
+    <Compile Include="DateTimeKindAttribute.cs" />
     <Compile Include="IDataProvider.cs" />
     <Compile Include="Migrations\201801281501315_InitialCreate.cs" />
     <Compile Include="Migrations\201801281501315_InitialCreate.Designer.cs">

@@ -11,7 +11,7 @@
   <xs:element name="AddHostResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/BlockchainService" minOccurs="0" name="AddHostResult" nillable="true" type="q1:Block" />
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/BlockchainService" minOccurs="0" name="AddHostResult" nillable="true" type="q1:BlockService" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -21,14 +21,13 @@
         <xs:element minOccurs="0" name="login" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="role" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="code" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="AddUserResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/BlockchainService" minOccurs="0" name="AddUserResult" nillable="true" type="q2:Block" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/BlockchainService" minOccurs="0" name="AddUserResult" nillable="true" type="q2:BlockService" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -42,7 +41,7 @@
   <xs:element name="AddDataResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/BlockchainService" minOccurs="0" name="AddDataResult" nillable="true" type="q3:Block" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/BlockchainService" minOccurs="0" name="AddDataResult" nillable="true" type="q3:BlockService" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -69,7 +68,7 @@
   <xs:element name="GetChainResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/BlockchainService" minOccurs="0" name="GetChainResult" nillable="true" type="q5:ArrayOfBlock" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/BlockchainService" minOccurs="0" name="GetChainResult" nillable="true" type="q5:ArrayOfBlockService" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

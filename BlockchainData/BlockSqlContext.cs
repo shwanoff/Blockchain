@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
 namespace BlockchainData
 {
@@ -13,6 +14,8 @@ namespace BlockchainData
         public BlockSqlContext()
             : base("BlockchainLocalConnection")
         {
+            // Применяем атрибут utc к свойствам сущностей отмеченные этим атрибутом.
+            ((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized += (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
         }
 
         /// <summary>

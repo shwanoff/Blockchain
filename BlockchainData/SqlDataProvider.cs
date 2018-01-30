@@ -25,7 +25,7 @@ namespace BlockchainData
                 var block = new Block()
                 {
                     Version = version,
-                    CreatedOn = createdOn,
+                    CreatedOn = createdOn.ToLocalTime(),
                     Hash = hash,
                     PreviousHash = previousHash,
                     Data = data,
@@ -58,6 +58,7 @@ namespace BlockchainData
             using (var db = new BlockSqlContext())
             {
                 var blocks = db.Blocks.ToList();
+                
                 return blocks;
             }
         }

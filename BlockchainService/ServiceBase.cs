@@ -156,7 +156,7 @@ namespace BlockchainService
             var b = new BlockService()
             {
                 Version = block.Version,
-                CreatedOn = block.CreatedOn,
+                CreatedOn = block.CreatedOn.ToUniversalTime(),
                 Hash = block.Hash,
                 PreviousHash = block.PreviousHash,
                 Data = block.Data.GetJson(),

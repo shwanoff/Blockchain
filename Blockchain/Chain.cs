@@ -80,35 +80,34 @@ namespace Blockchain
         public Chain()
         {
             // Получаем цепочки блоков.
-            var globalChain = GetGlobalChein();
+            var globalChain = GetGlobalChein(); // TODO: Решить проблему когда служба обращается сама к себе.
             var localChain = GetLocalChain();
 
-            // Создаем новую, если ни одной цепочки не найдено.
-            if (globalChain == null && localChain == null)
+
+            if (globalChain != null && localChain != null)
             {
-                CreateNewBlockChain();
-            }
-            else
-            {
-                // Если глобальная цепочка больше, синхронизируемся с ней. Иначе с локальной, если они совпадают.
-                if(globalChain?.Length > localChain?.Length)
+                if (globalChain.Length > localChain.Length)
                 {
                     ReplaceLocalChainFromGlobalChain(globalChain);
                 }
                 else
                 {
-                    // Для проверки совпадения цепочек, достаточно проверить хеши крайних блоков.
-                    // Если не совпадают, выбираем глобальную цепочку. Иначе загружаем локальную.
-                    if(globalChain?.PreviousBlock?.Hash != localChain?.PreviousBlock?.Hash)
-                    {
-                        ReplaceLocalChainFromGlobalChain(globalChain);
-                    }
-                    else
-                    {
-                        LoadDataFromLocalChain(localChain);
-                    }
+                    LoadDataFromLocalChain(localChain);
                 }
             }
+            else if (globalChain != null)
+            {
+                ReplaceLocalChainFromGlobalChain(globalChain);
+            }
+            else if (localChain != null)
+            {
+                LoadDataFromLocalChain(localChain);
+            }
+            else
+            {
+                CreateNewBlockChain();
+            }
+
 
             if (!CheckCorrect())
             {
@@ -238,13 +237,15 @@ namespace Blockchain
         /// <returns> Цепочка блоков. </returns>
         private Chain GetGlobalChein()
         {
-            _hosts.Add("http://blockchain-dev-as.azurewebsites.net"); // TODO: Сделай получение из конфиг файла.
+            #if DEBUG
+            _hosts.Add("http://blockchain-dev-as.azurewebsites.net"); // TODO: Сделать получение из конфиг файла.
+            #endif
 
             foreach (var host in Hosts)
             {
                 // TODO: Здесь нужно будет переделать. Предварительно выбирается хост с самой большой цепочкой блоков и уже он синхранизуется.
                 var blocks = GetBlocksFromHosts(host);
-                if (blocks.Count > 0)
+                if (blocks != null && blocks.Count > 0)
                 {
                     var chain = new Chain(blocks);
                     return chain;
@@ -480,8 +481,15 @@ namespace Blockchain
         {
             // http://localhost:28451/BlockchainService.svc/api/getchain/ пример запроса.
             var response = SendRequest(ip, "getchain", "");
-            var blocks = DeserializeCollectionBlocks(response);
-            return blocks;
+            if(string.IsNullOrEmpty(response))
+            {
+                return null;
+            }
+            else
+            {
+                var blocks = DeserializeCollectionBlocks(response);
+                return blocks;
+            }
         }
 
         /// <summary>
@@ -497,6 +505,7 @@ namespace Blockchain
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.Timeout = TimeSpan.FromSeconds(20);
 
                 // http://localhost:28451/BlockchainService.svc/api/getchain/ пример запроса.
                 string repUri = $"{ip}/BlockchainService.svc/api/{method}/{data}";
