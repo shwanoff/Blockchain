@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace BlockchainExplorerWeb.Models
 {
@@ -12,6 +13,7 @@ namespace BlockchainExplorerWeb.Models
         /// Информация.
         /// </summary>
         [DataMember]
+        [Required]
         public string Content { get; set; }
 
         /// <summary>
