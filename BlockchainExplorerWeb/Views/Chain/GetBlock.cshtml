@@ -1,0 +1,50 @@
+﻿@model BlockchainExplorerWeb.Models.Block
+
+@{
+    ViewBag.Title = "Просмотр блока";
+}
+<div class="page-header">
+    <h1>@ViewBag.Title <small>@Model.Hash</small></h1>
+</div>
+
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Версия</th>
+        <td>@Model.Version</td>
+    </tr>
+    <tr>
+        <th>Дата и время создания</th>
+        <td>@Model.CreatedOn.ToLocalTime().ToString("dd.MM.yyyy HH.mm.ss")</td>
+    </tr>
+    <tr>
+        <th>Хеш блока</th>
+        <td>@Model.Hash</td>
+    </tr>
+    <tr>
+        <th>Предыдущий блок</th>
+        <td>
+            @if(@Model.GenesisBlock == false)
+            {
+                @Html.ActionLink(@Model.PreviousHash, "GetBlock", "Chain", routeValues: new { @hash = Model.PreviousHash }, htmlAttributes: null);
+            }
+        </td>
+        
+    </tr>
+    <tr>
+        <th>Пользователь</th>
+        <td>
+            Имя пользователя: @Model.UserObject.Login <br />
+            Роль: @Model.UserObject.Role.GetDescription() <br />
+            Хеш: @Model.UserObject.Hash
+        </td>
+    </tr>
+    <tr>
+        <th>Данные</th>
+        <td>
+            Тип: @Model.DataObject.Type.GetDescription() <br />
+            Хеш: @Model.DataObject.Hash <br />
+            Информация: @Model.DataObject.Content
+        </td>
+    </tr>
+</table>

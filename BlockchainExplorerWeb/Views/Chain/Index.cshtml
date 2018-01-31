@@ -1,0 +1,30 @@
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<BlockchainExplorerWeb.Models.Block>
+
+@{
+    ViewBag.Title = "Просмотр";
+}
+<div class="page-header">
+    <h1>Обозреватель блоков</h1>
+    <h3>Всего @Model.TotalItemCount блоков</h3>
+</div>
+
+<p>@Html.ActionLink("Синхронизовать", "Sync", "Chain", routeValues: null, htmlAttributes: new { @class = "btn btn-warning pull-right" })</p>
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Хеш блока</th>
+        <th>Дата создания</th>
+    </tr>
+    @foreach (var block in Model)
+    {
+        <tr>
+            <td>@Html.ActionLink(block.Hash, "GetBlock", "Chain", routeValues: new { @hash = block.Hash }, htmlAttributes: null)</td>
+            <td>@block.CreatedOn.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")</td>
+        </tr>
+    }
+</table>
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+

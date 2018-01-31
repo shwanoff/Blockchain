@@ -527,9 +527,7 @@ namespace Blockchain
         /// <returns> Список блоков глобальной цепочки. </returns>
         private static List<Block> DeserializeCollectionBlocks(string json)
         {
-            var jsonFormatter2 = new DataContractJsonSerializer(typeof(GetChainResultRoot));
-
-            using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
+            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
             {
                 var deserializer = new DataContractJsonSerializer(typeof(GetChainResultRoot));
                 var requestResult = (GetChainResultRoot)deserializer.ReadObject(ms);

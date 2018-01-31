@@ -65,7 +65,7 @@ namespace Blockchain
             using (var ms = new MemoryStream())
             {
                 jsonFormatter.WriteObject(ms, component);
-                var jsonString = Encoding.Default.GetString((ms.ToArray()));
+                var jsonString = Encoding.UTF8.GetString((ms.ToArray()));
                 return jsonString;
             }
         }
@@ -82,7 +82,7 @@ namespace Blockchain
 
             var jsonFormatter = new DataContractJsonSerializer(type);
 
-            using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
+            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
             {
                 var deserializer = new DataContractJsonSerializer(type);
                 var result = (IHashable)deserializer.ReadObject(ms);

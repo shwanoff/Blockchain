@@ -1,31 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace BlockchainExplorerWeb.Controllers
 {
+    /// <summary>
+    /// Контроллер информационных страниц.
+    /// </summary>
     public class HomeController : Controller
     {
+        /// <summary>
+        /// Отобразить главную страницу.
+        /// </summary>
         public ActionResult Index()
         {
             return View();
         }
 
+        /// <summary>
+        /// Отобразить страницу о приложении.
+        /// </summary>
         public ActionResult About()
         {
 
-            return View();
-        }
-
-        public ActionResult Add()
-        {
-            return View();
-        }
-
-        public ActionResult Explore()
-        {
             return View();
         }
     }

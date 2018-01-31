@@ -29,7 +29,7 @@ namespace Blockchain.Algorithms
         /// <returns>Хеш.</returns>
         public string GetHash(string data)
         {
-            var bytes = Encoding.Default.GetBytes(data);
+            var bytes = Encoding.UTF8.GetBytes(data);
             var hashByte = _sha256.ComputeHash(bytes);
             var hash = BitConverter.ToString(hashByte);
 
